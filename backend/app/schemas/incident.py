@@ -54,6 +54,10 @@ class PassengerBase(BaseModel):
     hospital_name: str | None = None
     ambulance_ref: str | None = None
     first_aid_given: str | None = None
+    ambulance_request_time: str | None = None
+    ambulance_arrival_time: str | None = None
+    handover_time: str | None = None
+    departure_time: str | None = None
 
 
 class PassengerCreate(PassengerBase):
@@ -80,6 +84,8 @@ class TrainOperationBase(BaseModel):
     rescue_train_number: str | None = None
     rescue_start_time: str | None = None
     rescue_end_time: str | None = None
+    handover_to_occ_time: str | None = None
+    return_to_service_time: str | None = None
 
 
 class TrainOperationCreate(TrainOperationBase):
@@ -127,6 +133,7 @@ class StaffMemberBase(BaseModel):
     employee_id: str | None = None
     role: str | None = None
     notes: str | None = None
+    digital_signature: str | None = None
 
 
 class StaffMemberCreate(StaffMemberBase):
@@ -148,6 +155,8 @@ class StaffMemberResponse(StaffMemberBase):
 class ImpactBase(BaseModel):
     incident_duration: int | None = None
     response_duration: int | None = None
+    evacuation_duration: int | None = None
+    rescue_duration: int | None = None
     train_delays: int | None = None
     passengers_affected: int | None = None
     injuries: int | None = None

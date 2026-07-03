@@ -24,6 +24,10 @@ export interface Passenger {
   hospital_name: string | null;
   ambulance_ref: string | null;
   first_aid_given: string | null;
+  ambulance_request_time: string | null;
+  ambulance_arrival_time: string | null;
+  handover_time: string | null;
+  departure_time: string | null;
 }
 
 export interface TrainOperation {
@@ -35,6 +39,8 @@ export interface TrainOperation {
   rescue_train_number: string | null;
   rescue_start_time: string | null;
   rescue_end_time: string | null;
+  handover_to_occ_time: string | null;
+  return_to_service_time: string | null;
 }
 
 export interface StationEvacuation {
@@ -52,12 +58,15 @@ export interface StaffMember {
   employee_id: string | null;
   role: string | null;
   notes: string | null;
+  digital_signature: string | null;
 }
 
 export interface ImpactAssessment {
   id?: number;
   incident_duration: number | null;
   response_duration: number | null;
+  evacuation_duration: number | null;
+  rescue_duration: number | null;
   train_delays: number | null;
   passengers_affected: number | null;
   injuries: number | null;
@@ -163,6 +172,30 @@ export const STATIONS: Station[] = [
 ];
 
 export const SHIFTS = ["Morning", "Evening", "Night"];
+
+export const LOCATION_OPTIONS = [
+  "Platform",
+  "Concourse",
+  "Street Level",
+  "Track",
+  "Equipment Room",
+];
+
+export const DISCOVERED_BY_OPTIONS = [
+  "OCC",
+  "Station Manager (SM)",
+  "Assistant SM (ASM)",
+  "Station Ambassador (SA)",
+  "Security",
+  "Maintenance",
+  "Cleaner",
+  "Passenger",
+  "Police",
+  "Civil Defense",
+  "Other",
+];
+
+export const TRAIN_MODES = ["UTO", "ATPM", "RM", "DM"];
 
 export const INCIDENT_TYPES = [
   "Medical Emergency",

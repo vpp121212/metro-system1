@@ -18,5 +18,7 @@ class TrainOperation(Base):
     rescue_train_number: Mapped[str | None] = mapped_column(String(50))
     rescue_start_time: Mapped[time | None] = mapped_column(Time)
     rescue_end_time: Mapped[time | None] = mapped_column(Time)
+    handover_to_occ_time: Mapped[time | None] = mapped_column(Time)
+    return_to_service_time: Mapped[time | None] = mapped_column(Time)
 
     incident: Mapped["Incident"] = relationship(back_populates="train_operations")

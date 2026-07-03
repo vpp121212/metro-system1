@@ -80,6 +80,7 @@ export default function IncidentDetail() {
                 </Box>}
               </Grid>
               <Grid item xs={6}><Field label="Location" value={inc.location} /></Grid>
+              <Grid item xs={6}><Field label="Route" value={inc.station ? (STATIONS.find((s) => s.name === inc.station)?.line === "red" ? "Red Line" : "Blue Line") : null} /></Grid>
               <Grid item xs={6}><Field label="Platform / Track" value={inc.platform_track} /></Grid>
               <Grid item xs={6}><Field label="Recorded By" value={inc.created_by_name} /></Grid>
               <Grid item xs={6}><Field label="Employee ID" value={inc.created_by_employee_id} /></Grid>
@@ -131,6 +132,11 @@ export default function IncidentDetail() {
                   <Grid item xs={6}><Field label="Emergency Contact" value={p.emergency_contact} /></Grid>
                   <Grid item xs={3}><Field label="Status" value={p.passenger_status} /></Grid>
                   <Grid item xs={3}><Field label="Hospital" value={p.hospital_name} /></Grid>
+                  <Grid item xs={12}><Field label="First Aid Given" value={p.first_aid_given} /></Grid>
+                  <Grid item xs={3}><Field label="Amb. Request" value={p.ambulance_request_time} /></Grid>
+                  <Grid item xs={3}><Field label="Amb. Arrival" value={p.ambulance_arrival_time} /></Grid>
+                  <Grid item xs={3}><Field label="Handover" value={p.handover_time} /></Grid>
+                  <Grid item xs={3}><Field label="Departure" value={p.departure_time} /></Grid>
                 </Grid>
               </Box>
             ))}
@@ -148,6 +154,8 @@ export default function IncidentDetail() {
                 <Grid item xs={6}><Field label="Rescue Train" value={inc.train_operations.rescue_train_number} /></Grid>
                 <Grid item xs={3}><Field label="Rescue Start" value={inc.train_operations.rescue_start_time} /></Grid>
                 <Grid item xs={3}><Field label="Rescue End" value={inc.train_operations.rescue_end_time} /></Grid>
+                <Grid item xs={3}><Field label="Handover to OCC" value={inc.train_operations.handover_to_occ_time} /></Grid>
+                <Grid item xs={3}><Field label="Return to Service" value={inc.train_operations.return_to_service_time} /></Grid>
               </Grid>
             ) : <Typography variant="body2" color="text.secondary">Not specified</Typography>}
           </SectionCard>
@@ -177,6 +185,7 @@ export default function IncidentDetail() {
                       <Typography variant="subtitle2">{s.name || "Unnamed"}</Typography>
                       <Typography variant="caption" color="text.secondary" display="block">{s.role}</Typography>
                       <Typography variant="caption" color="text.secondary">ID: {s.employee_id || "-"}</Typography>
+                      <Typography variant="caption" color="text.secondary" display="block">Signature: {s.digital_signature || "-"}</Typography>
                     </Card>
                   </Grid>
                 ))}
@@ -190,9 +199,11 @@ export default function IncidentDetail() {
             {inc.impact ? (
               <>
                 <Grid container spacing={2} mb={2}>
-                  <Grid item xs={4} sm={2}><Field label="Duration (min)" value={inc.impact.incident_duration !== null ? String(inc.impact.incident_duration) : null} /></Grid>
-                  <Grid item xs={4} sm={2}><Field label="Response (min)" value={inc.impact.response_duration !== null ? String(inc.impact.response_duration) : null} /></Grid>
-                  <Grid item xs={4} sm={2}><Field label="Train Delays" value={inc.impact.train_delays !== null ? String(inc.impact.train_delays) : null} /></Grid>
+                  <Grid item xs={3} sm={2}><Field label="Duration (min)" value={inc.impact.incident_duration !== null ? String(inc.impact.incident_duration) : null} /></Grid>
+                  <Grid item xs={3} sm={2}><Field label="Response (min)" value={inc.impact.response_duration !== null ? String(inc.impact.response_duration) : null} /></Grid>
+                  <Grid item xs={3} sm={2}><Field label="Evacuation (min)" value={inc.impact.evacuation_duration !== null ? String(inc.impact.evacuation_duration) : null} /></Grid>
+                  <Grid item xs={3} sm={2}><Field label="Rescue (min)" value={inc.impact.rescue_duration !== null ? String(inc.impact.rescue_duration) : null} /></Grid>
+                  <Grid item xs={3} sm={2}><Field label="Train Delays" value={inc.impact.train_delays !== null ? String(inc.impact.train_delays) : null} /></Grid>
                   <Grid item xs={4} sm={2}><Field label="Affected" value={inc.impact.passengers_affected !== null ? String(inc.impact.passengers_affected) : null} /></Grid>
                   <Grid item xs={4} sm={2}><Field label="Injuries" value={inc.impact.injuries !== null ? String(inc.impact.injuries) : null} /></Grid>
                   <Grid item xs={4} sm={2}><Field label="Fatalities" value={inc.impact.fatalities !== null ? String(inc.impact.fatalities) : null} /></Grid>

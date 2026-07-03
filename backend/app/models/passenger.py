@@ -1,4 +1,6 @@
-from sqlalchemy import ForeignKey, Integer, String
+from datetime import time
+
+from sqlalchemy import ForeignKey, Integer, String, Time
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from ..database import Base
@@ -17,5 +19,9 @@ class Passenger(Base):
     hospital_name: Mapped[str | None] = mapped_column(String(200))
     ambulance_ref: Mapped[str | None] = mapped_column(String(50))
     first_aid_given: Mapped[str | None] = mapped_column(String(500))
+    ambulance_request_time: Mapped[time | None] = mapped_column(Time)
+    ambulance_arrival_time: Mapped[time | None] = mapped_column(Time)
+    handover_time: Mapped[time | None] = mapped_column(Time)
+    departure_time: Mapped[time | None] = mapped_column(Time)
 
     incident: Mapped["Incident"] = relationship(back_populates="passengers")

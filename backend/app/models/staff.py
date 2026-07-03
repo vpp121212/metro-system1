@@ -13,5 +13,6 @@ class StaffMember(Base):
     employee_id: Mapped[str | None] = mapped_column(String(50))
     role: Mapped[str | None] = mapped_column(String(100))
     notes: Mapped[str | None] = mapped_column(String(500))
+    digital_signature: Mapped[str | None] = mapped_column(String(200))
 
     incident: Mapped["Incident"] = relationship(back_populates="staff")

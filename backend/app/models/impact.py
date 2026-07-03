@@ -21,6 +21,8 @@ class ImpactAssessment(Base):
     cause: Mapped[str | None] = mapped_column(Text)
     corrective_actions: Mapped[str | None] = mapped_column(Text)
     lessons_learned: Mapped[str | None] = mapped_column(Text)
+    evacuation_duration: Mapped[int | None] = mapped_column(Integer)
+    rescue_duration: Mapped[int | None] = mapped_column(Integer)
     incident_closed: Mapped[bool | None] = mapped_column(Boolean, default=False)
     closed_at: Mapped[datetime | None] = mapped_column(DateTime)
 

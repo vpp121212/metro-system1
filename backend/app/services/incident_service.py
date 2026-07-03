@@ -28,8 +28,8 @@ def _convert_times(data: dict, fields: list[str]):
 
 TIME_FIELDS = {
     "detection": ["detection_time", "occ_notification_time", "occ_response_time"],
-    "passengers": [],
-    "train_operations": ["rescue_start_time", "rescue_end_time"],
+    "passengers": ["ambulance_request_time", "ambulance_arrival_time", "handover_time", "departure_time"],
+    "train_operations": ["rescue_start_time", "rescue_end_time", "handover_to_occ_time", "return_to_service_time"],
     "evacuation": ["evacuation_order_time", "evacuation_start_time", "evacuation_completion_time",
                     "station_clear_notification_time", "station_reopening_time"],
 }
