@@ -227,12 +227,12 @@ export const INCIDENT_TYPES = [
 ];
 
 export const STAFF_ROLES = [
-  "Station Manager",
-  "Customer Service Agent",
-  "Security Officer",
-  "Maintenance Technician",
-  "Train Operator",
-  "Supervisor",
+  "Station Manager (SM)",
+  "Assistant Station Manager (ASM)",
+  "Station Ambassador (SA)",
+  "Security",
+  "Maintenance",
   "First Responder",
-  "Control Room Operator",
+  "Police",
+  "Civil Defense",
 ];
