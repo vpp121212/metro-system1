@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: metro-system-pro
+    name: metro-system1-2
     runtime: python
     region: frankfurt
     plan: free
