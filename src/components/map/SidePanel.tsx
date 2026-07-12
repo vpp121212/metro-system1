@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
-  Train, MapPin, AlertTriangle, BarChart3, Menu, X,
+  Train, MapPin, AlertTriangle, BarChart3, Menu, X, Clock,
 } from 'lucide-react'
 import { LINES, LINE_COLORS } from '@/lib/metro-data'
 
@@ -51,6 +51,21 @@ export default function SidePanel({ activeFilter, onFilterChange, stats }: SideP
                   <AlertTriangle className="h-3.5 w-3.5 text-t-orange mb-0.5" />
                   <span className="text-white text-xs font-bold">{stats.alerts}</span>
                   <span className="text-[8px] text-gray-500">تنبيه</span>
+                </div>
+              </div>
+
+              {/* Operating Hours */}
+              <div className="flex items-center gap-2 px-2.5 py-2 rounded-xl bg-t-card/30 border border-t-border/30">
+                <div className="w-7 h-7 rounded-lg bg-t-green/15 flex items-center justify-center shrink-0">
+                  <Clock className="h-3.5 w-3.5 text-t-green" />
+                </div>
+                <div className="min-w-0">
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-[10px] font-bold text-white">ساعات التشغيل</span>
+                    <span className="text-[8px] bg-t-green/20 text-t-green px-1.5 py-0.5 rounded-full font-medium">مباشر</span>
+                  </div>
+                  <p className="text-[9px] text-gray-500 mt-0.5">السبت - الخميس ٦:٠٠ صباحاً - ١٢:٠٠ صباحاً</p>
+                  <p className="text-[9px] text-gray-500">الجمعة ١٠:٠٠ صباحاً - ١٢:٠٠ صباحاً</p>
                 </div>
               </div>
 
