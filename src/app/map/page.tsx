@@ -6,6 +6,7 @@ import SidePanel from '@/components/map/SidePanel'
 import BottomPanel from '@/components/map/BottomPanel'
 import AIPanel from '@/components/map/AIPanel'
 import PlaybackBar from '@/components/map/PlaybackBar'
+import TickerBar from '@/components/map/TickerBar'
 import StationPopup from '@/components/map/StationPopup'
 import TrainPopup from '@/components/map/TrainPopup'
 import { LINES, LINE_COLORS } from '@/lib/metro-data'
@@ -118,6 +119,13 @@ export default function CommandCenterPage() {
         onStationClick={handleStationClick}
         onTrainClick={handleTrainClick}
       />
+
+      {/* Alerts Ticker */}
+      <div className="absolute top-0 left-0 right-0 z-30 pointer-events-none">
+        <div className="pointer-events-auto">
+          <TickerBar />
+        </div>
+      </div>
 
       {/* Side Panel */}
       <SidePanel
