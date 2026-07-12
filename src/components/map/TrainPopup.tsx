@@ -87,10 +87,10 @@ export default function TrainPopup({ train, onClose }: TrainPopupProps) {
             </div>
 
             <a
-              href={`/trains/${train.id}`}
+              href={`/trains`}
               className="flex items-center justify-center gap-1 w-full py-1.5 rounded-xl bg-t-cyan/10 text-t-cyan text-[10px] font-medium hover:bg-t-cyan/20 transition-colors"
             >
-              <span>تفاصيل القطار</span>
+              <span>جميع القطارات</span>
               <ChevronLeft className="h-3 w-3" />
             </a>
           </div>

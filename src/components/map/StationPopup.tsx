@@ -74,11 +74,11 @@ export default function StationPopup({ station, onClose }: StationPopupProps) {
               </div>
             </div>
 
-            <a
-              href={`/stations/${station.id}`}
+          <a
+              href={`/stations`}
               className="flex items-center justify-center gap-1 w-full py-1.5 rounded-xl bg-t-cyan/10 text-t-cyan text-[10px] font-medium hover:bg-t-cyan/20 transition-colors"
             >
-              <span>صفحة المحطة</span>
+              <span>جميع المحطات</span>
               <ChevronLeft className="h-3 w-3" />
             </a>
           </div>
