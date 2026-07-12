@@ -1,16 +1,10 @@
 services:
   - type: web
     name: traineye-ai
-    runtime: node
+    runtime: docker
     region: frankfurt
     plan: free
-    buildCommand: npm install && npx prisma generate && npm run build
-    startCommand: npx prisma db push && npx prisma db seed && npm run start
     healthCheckPath: /api/health
     envVars:
       - key: NODE_VERSION
         value: 20
-      - key: DATABASE_URL
-        sync: false
-      - key: NEXTAUTH_SECRET
-        generateValue: true

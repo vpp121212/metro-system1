@@ -1,4 +1,4 @@
-import { PrismaClient, Status, LineColor } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -25,7 +25,7 @@ async function hasData(): Promise<boolean> {
 interface LineDef {
   nameAr: string;
   nameEn: string;
-  color: LineColor;
+  color: string;
   colorHex: string;
   order: number;
   stations: StationDef[];
@@ -46,7 +46,7 @@ const LINES: LineDef[] = [
   {
     nameAr: "الخط الأزرق",
     nameEn: "Blue Line",
-    color: LineColor.BLUE,
+    color: "BLUE",
     colorHex: "#2563eb",
     order: 1,
     trainCount: 10,
@@ -83,7 +83,7 @@ const LINES: LineDef[] = [
   {
     nameAr: "الخط الأحمر",
     nameEn: "Red Line",
-    color: LineColor.RED,
+    color: "RED",
     colorHex: "#dc2626",
     order: 2,
     trainCount: 8,
@@ -110,7 +110,7 @@ const LINES: LineDef[] = [
   {
     nameAr: "الخط البرتقالي",
     nameEn: "Orange Line",
-    color: LineColor.ORANGE,
+    color: "ORANGE",
     colorHex: "#ea580c",
     order: 3,
     trainCount: 8,
@@ -144,7 +144,7 @@ const LINES: LineDef[] = [
   {
     nameAr: "الخط الأصفر",
     nameEn: "Yellow Line",
-    color: LineColor.YELLOW,
+    color: "YELLOW",
     colorHex: "#eab308",
     order: 4,
     trainCount: 5,
@@ -165,7 +165,7 @@ const LINES: LineDef[] = [
   {
     nameAr: "الخط الأخضر",
     nameEn: "Green Line",
-    color: LineColor.GREEN,
+    color: "GREEN",
     colorHex: "#16a34a",
     order: 5,
     trainCount: 5,
@@ -189,7 +189,7 @@ const LINES: LineDef[] = [
   {
     nameAr: "الخط البنفسجي",
     nameEn: "Purple Line",
-    color: LineColor.PURPLE,
+    color: "PURPLE",
     colorHex: "#9333ea",
     order: 6,
     trainCount: 6,
@@ -211,63 +211,63 @@ const LINES: LineDef[] = [
 
 const ALERTS = [
   {
-    type: Status.CRITICAL,
+    type: "CRITICAL",
     titleAr: "توقف قطار",
     titleEn: "Train Breakdown",
     descriptionAr: "توقف القطار B-001 بسبب عطل في النظام الكهربائي",
     descriptionEn: "Train B-001 stopped due to electrical system failure",
   },
   {
-    type: Status.WARNING,
+    type: "WARNING",
     titleAr: "ازدحام مرتفع",
     titleEn: "High Congestion",
     descriptionAr: "ازدحام مرتفع في محطة العليا بنسبة 92%",
     descriptionEn: "High congestion at Al Olaya station at 92%",
   },
   {
-    type: Status.WARNING,
+    type: "WARNING",
     titleAr: "تأخير في الخدمة",
     titleEn: "Service Delay",
     descriptionAr: "تأخير 15 دقيقة في الخط الأزرق بسبب صيانة مفاجئة",
     descriptionEn: "15-minute delay on Blue Line due to emergency maintenance",
   },
   {
-    type: Status.CRITICAL,
+    type: "CRITICAL",
     titleAr: "خلل في الكاميرا",
     titleEn: "Camera Malfunction",
     descriptionAr: "فقدان الإشارة من كاميرات المحطة الشرقية",
     descriptionEn: "Lost signal from Eastern Terminal cameras",
   },
   {
-    type: Status.INFO,
+    type: "INFO",
     titleAr: "اكتمال الصيانة",
     titleEn: "Maintenance Completed",
     descriptionAr: "اكتملت صيانة القطار R-003 بنجاح",
     descriptionEn: "Maintenance completed successfully on train R-003",
   },
   {
-    type: Status.CRITICAL,
+    type: "CRITICAL",
     titleAr: "حريق في المحطة",
     titleEn: "Station Fire Alarm",
     descriptionAr: "تنبيه حريق في محطة المطار - تفعيل إجراءات الطوارئ",
     descriptionEn: "Fire alarm at Airport station - emergency procedures activated",
   },
   {
-    type: Status.WARNING,
+    type: "WARNING",
     titleAr: "ارتفاع درجة الحرارة",
     titleEn: "High Temperature",
     descriptionAr: "ارتفاع درجة حرارة معدات التبريد في محطة البطحاء",
     descriptionEn: "Elevated cooling equipment temperature at Al Batha station",
   },
   {
-    type: Status.INFO,
+    type: "INFO",
     titleAr: "تحديث النظام",
     titleEn: "System Update",
     descriptionAr: "تم تحديث نظام التحكم في الإشارات بنجاح",
     descriptionEn: "Signal control system updated successfully",
   },
   {
-    type: Status.CRITICAL,
+    type: "CRITICAL",
     titleAr: "انقطاع الكهرباء",
     titleEn: "Power Outage",
     descriptionAr: "انقطاع جزئي في التيار الكهربائي على الخط البرتقالي",
@@ -470,7 +470,7 @@ async function main() {
           name,
           code,
           lineId: line.id,
-          status: i === lineDef.trainCount ? Status.MAINTENANCE : Status.ACTIVE,
+          status: i === lineDef.trainCount ? "MAINTENANCE" : "ACTIVE",
           speed: i === lineDef.trainCount ? 0 : Math.round(Math.random() * 80 + 20),
           direction: i % 2 === 0 ? "forward" : "reverse",
           currentStationId,
@@ -491,7 +491,7 @@ async function main() {
           data: {
             name: `${st.nameEn} Cam ${c}`,
             stationId: st.id,
-            status: Status.ACTIVE,
+            status: "ACTIVE",
             streamUrl: `rtsp://cameras.traineye.sa/${lineDef.color.toLowerCase()}/${st.order}/${c}`,
           },
         });
@@ -501,9 +501,9 @@ async function main() {
 
   // ── 6. Alerts ──────────────────────────────────────────────────
   console.log("  → Creating alerts...");
-  const blueLineId = (await prisma.line.findFirst({ where: { color: LineColor.BLUE } }))!.id;
-  const redLineId = (await prisma.line.findFirst({ where: { color: LineColor.RED } }))!.id;
-  const orangeLineId = (await prisma.line.findFirst({ where: { color: LineColor.ORANGE } }))!.id;
+  const blueLineId = (await prisma.line.findFirst({ where: { color: "BLUE" } }))!.id;
+  const redLineId = (await prisma.line.findFirst({ where: { color: "RED" } }))!.id;
+  const orangeLineId = (await prisma.line.findFirst({ where: { color: "ORANGE" } }))!.id;
 
   const allStations = await prisma.station.findMany({ take: 20 });
 
@@ -568,8 +568,8 @@ async function main() {
   // ── 9. Fleet Records ────────────────────────────────────────────
   console.log("  → Creating fleet records...");
   const totalTrains = await prisma.train.count();
-  const activeTrains = await prisma.train.count({ where: { status: Status.ACTIVE } });
-  const maintenanceTrains = await prisma.train.count({ where: { status: Status.MAINTENANCE } });
+  const activeTrains = await prisma.train.count({ where: { status: "ACTIVE" } });
+  const maintenanceTrains = await prisma.train.count({ where: { status: "MAINTENANCE" } });
 
   await prisma.fleet.create({
     data: {
@@ -597,7 +597,7 @@ async function main() {
         lineId: train.lineId,
         fromStationId: lineStations[fromIdx].id,
         toStationId: lineStations[toIdx].id,
-        status: Math.random() > 0.3 ? Status.COMPLETED : Status.ON_TIME,
+        status: Math.random() > 0.3 ? "COMPLETED" : "ON_TIME",
         scheduledAt: hoursAgo(Math.round(Math.random() * 12 + 1)),
         actualStartAt: hoursAgo(Math.round(Math.random() * 10 + 1)),
         actualEndAt: hoursAgo(Math.round(Math.random() * 8)),
@@ -610,7 +610,7 @@ async function main() {
   // ── 11. Maintenance Records ─────────────────────────────────────
   console.log("  → Creating maintenance records...");
   const maintenanceTypes = ["preventive", "corrective", "emergency"];
-  const maintenanceStatuses: Status[] = [Status.COMPLETED, Status.SCHEDULED, Status.ACTIVE];
+  const maintenanceStatuses: string[] = ["COMPLETED", "SCHEDULED", "ACTIVE"];
 
   for (const train of trains.slice(0, 15)) {
     const type = maintenanceTypes[Math.floor(Math.random() * maintenanceTypes.length)];
@@ -622,7 +622,7 @@ async function main() {
         trainId: train.id,
         type,
         description: `${type === "preventive" ? "Preventive" : type === "corrective" ? "Corrective" : "Emergency"} maintenance for ${train.code}`,
-        status: isCompleted ? Status.COMPLETED : Status.SCHEDULED,
+        status: isCompleted ? "COMPLETED" : "SCHEDULED",
         scheduledAt: scheduled,
         completedAt: isCompleted ? new Date(scheduled.getTime() + 3600000) : null,
       },
@@ -644,7 +644,7 @@ async function main() {
       data: {
         title: n.title,
         message: n.message,
-        type: Status.INFO,
+        type: "INFO",
         isRead: false,
       },
     });
