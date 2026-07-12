@@ -9,6 +9,7 @@ interface StatCardProps {
   value: string | number
   icon: ReactNode
   trend?: { value: number; positive: boolean }
+  subtitle?: string
   color?: string
   className?: string
 }
@@ -33,7 +34,7 @@ const accentBorderMap: Record<string, string> = {
   yellow: 'border-l-t-yellow',
 }
 
-export default function StatCard({ title, value, icon, trend, color = 'cyan', className }: StatCardProps) {
+export default function StatCard({ title, value, icon, trend, subtitle, color = 'cyan', className }: StatCardProps) {
   return (
     <div
       className={cn(
@@ -49,6 +50,9 @@ export default function StatCard({ title, value, icon, trend, color = 'cyan', cl
         <div className="min-w-0 flex-1">
           <p className="text-sm text-gray-400 font-medium truncate">{title}</p>
           <p className="text-2xl md:text-3xl font-bold text-white mt-1 tabular-nums">{value}</p>
+          {subtitle && (
+            <p className="text-xs text-gray-500 mt-1">{subtitle}</p>
+          )}
           {trend && (
             <div className={cn(
               'flex items-center gap-1 mt-2 text-xs font-medium',
