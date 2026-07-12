@@ -39,6 +39,8 @@ model Station {
   tripsFrom     Trip[]   @relation("FromStation")
   tripsTo       Trip[]   @relation("ToStation")
   passengerRecords PassengerRecord[]
+  managers      User[]   @relation("StationManagers")
+  incidentReports IncidentReport[]
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
@@ -169,18 +171,24 @@ model Fleet {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  name      String
-  email     String   @unique
-  password  String
-  roleId    String
-  role      Role     @relation(fields: [roleId], references: [id])
-  avatar    String?
-  isActive  Boolean  @default(true)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          String   @id @default(uuid())
+  employeeId  String   @unique
+  name        String
+  email       String   @unique
+  password    String
+  roleId      String
+  role        Role     @relation(fields: [roleId], references: [id])
+  stationId   String?
+  station     Station? @relation("StationManagers", fields: [stationId], references: [id])
+  avatar      String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  incidentReports      IncidentReport[] @relation("ReportedBy")
+  assignedIncidents    IncidentReport[] @relation("AssignedTo")
 
   @@index([roleId])
+  @@index([employeeId])
 }
 
 model Role {
@@ -242,6 +250,27 @@ model SystemHealth {
   timestamp     DateTime @default(now())
 
   @@index([timestamp])
+}
+
+model IncidentReport {
+  id          String   @id @default(uuid())
+  type        String
+  description String
+  status      String   @default("OPEN")
+  priority    String   @default("MEDIUM")
+  stationId   String?
+  station     Station? @relation(fields: [stationId], references: [id])
+  reportedById String?
+  reportedBy  User?    @relation("ReportedBy", fields: [reportedById], references: [id])
+  assignedToId String?
+  assignedTo  User?    @relation("AssignedTo", fields: [assignedToId], references: [id])
+  resolvedAt  DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([stationId])
+  @@index([status])
+  @@index([type])
 }
 
 model ChatMessage {

@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
 
@@ -321,97 +322,58 @@ async function main() {
 
   console.log("🚀 Seeding TrainEye AI database...");
 
+  const password = await bcrypt.hash("metro123", 10);
+
   // ── 1. Roles & Permissions ──────────────────────────────────────────
   console.log("  → Creating roles & permissions...");
-  const adminRole = await prisma.role.create({
+
+  const operationsRole = await prisma.role.create({
     data: {
-      name: "ADMIN",
-      description: "System administrator with full access",
-      permissions: {
-        create: PERMISSIONS_LIST.map((p) => ({ name: p })),
-      },
+      name: "OPERATIONS",
+      description: "فريق العمليات - صلاحية كاملة على جميع الأنظمة",
+      permissions: { create: PERMISSIONS_LIST.map((p) => ({ name: p })) },
     },
   });
 
-  const operatorRole = await prisma.role.create({
+  const stationMgrRole = await prisma.role.create({
     data: {
-      name: "OPERATOR",
-      description: "Metro operator – can manage trains, trips, and alerts",
-      permissions: {
-        create: [
-          { name: "view_dashboard" },
-          { name: "manage_trains" },
-          { name: "manage_alerts" },
-          { name: "view_analytics" },
-          { name: "view_cameras" },
-          { name: "view_passenger_data" },
-          { name: "manage_notifications" },
-        ],
-      },
+      name: "STATION_MANAGER",
+      description: "مدير محطة - يمكنه إدارة تنبيهات محطته فقط",
+      permissions: { create: [{ name: "view_dashboard" }, { name: "manage_alerts" }, { name: "view_analytics" }, { name: "view_cameras" }, { name: "view_passenger_data" }] },
     },
   });
 
-  const viewerRole = await prisma.role.create({
+  const securityRole = await prisma.role.create({
     data: {
-      name: "VIEWER",
-      description: "Read-only access to dashboards and analytics",
-      permissions: {
-        create: [
-          { name: "view_dashboard" },
-          { name: "view_analytics" },
-          { name: "view_passenger_data" },
-        ],
-      },
+      name: "SECURITY",
+      description: "فريق الأمن - يمكنه إدارة بلاغات الحوادث",
+      permissions: { create: [{ name: "view_dashboard" }, { name: "view_cameras" }, { name: "manage_alerts" }] },
     },
   });
 
-  const maintenanceRole = await prisma.role.create({
-    data: {
-      name: "MAINTENANCE",
-      description: "Maintenance crew – can manage maintenance records and view fleet",
-      permissions: {
-        create: [
-          { name: "view_dashboard" },
-          { name: "manage_maintenance" },
-          { name: "manage_fleet" },
-          { name: "view_cameras" },
-        ],
-      },
-    },
-  });
+  // ── 2. Users (basic, no station link yet) ────────────────────────
+  console.log("  → Creating users...");
+  const usersData = [
+    { employeeId: "OP-001", name: "أحمد الشمري", email: "admin@traineye.sa", roleId: operationsRole.id },
+    { employeeId: "OP-002", name: "محمد العتيبي", email: "op1@traineye.sa", roleId: operationsRole.id },
+    { employeeId: "OP-003", name: "سعد القحطاني", email: "op2@traineye.sa", roleId: operationsRole.id },
+    { employeeId: "SM-001", name: "فهد المطيري", email: "sm1@traineye.sa", roleId: stationMgrRole.id },
+    { employeeId: "SM-002", name: "ناصر الدوسري", email: "sm2@traineye.sa", roleId: stationMgrRole.id },
+    { employeeId: "SM-003", name: "عبدالله الزهراني", email: "sm3@traineye.sa", roleId: stationMgrRole.id },
+    { employeeId: "SM-004", name: "خالد الغامدي", email: "sm4@traineye.sa", roleId: stationMgrRole.id },
+    { employeeId: "SM-005", name: "فيصل الحربي", email: "sm5@traineye.sa", roleId: stationMgrRole.id },
+    { employeeId: "SM-006", name: "ماجد العجمي", email: "sm6@traineye.sa", roleId: stationMgrRole.id },
+    { employeeId: "SEC-001", name: "نايف الرشيدي", email: "sec1@traineye.sa", roleId: securityRole.id },
+    { employeeId: "SEC-002", name: "بدر العنزي", email: "sec2@traineye.sa", roleId: securityRole.id },
+  ];
 
-  // ── 2. Admin User ──────────────────────────────────────────────────
-  console.log("  → Creating admin user...");
-  await prisma.user.create({
-    data: {
-      name: "أحمد الشمري",
-      email: "admin@traineye.sa",
-      password: "$2b$10$placeholder_hash_should_be_replaced_with_real_bcrypt_hash",
-      roleId: adminRole.id,
-      avatar: "/avatars/admin.png",
-      isActive: true,
-    },
-  });
-
-  await prisma.user.create({
-    data: {
-      name: "محمد العتيبي",
-      email: "operator@traineye.sa",
-      password: "$2b$10$placeholder_hash_should_be_replaced_with_real_bcrypt_hash",
-      roleId: operatorRole.id,
-      isActive: true,
-    },
-  });
-
-  await prisma.user.create({
-    data: {
-      name: "فهد المطيري",
-      email: "maintenance@traineye.sa",
-      password: "$2b$10$placeholder_hash_should_be_replaced_with_real_bcrypt_hash",
-      roleId: maintenanceRole.id,
-      isActive: true,
-    },
-  });
+  const createdUsers: { id: string; employeeId: string; name: string; roleId: string }[] = [];
+  for (const u of usersData) {
+    const user = await prisma.user.create({
+      data: { ...u, password },
+    });
+    createdUsers.push(user);
+  }
 
   // ── 3. Lines & Stations ──────────────────────────────────────────
   console.log("  → Creating lines and stations...");
@@ -498,7 +460,18 @@ async function main() {
     }
   }
 
-  // ── 6. Alerts ──────────────────────────────────────────────────
+  // ── 6. Assign Station Managers ─────────────────────────────────
+  console.log("  → Assigning station managers to stations...");
+  const stationMgrUsers = createdUsers.filter(u => u.roleId === stationMgrRole.id);
+  const allStas = await prisma.station.findMany({ orderBy: { order: "asc" }, take: stationMgrUsers.length });
+  for (let i = 0; i < stationMgrUsers.length && i < allStas.length; i++) {
+    await prisma.user.update({
+      where: { id: stationMgrUsers[i].id },
+      data: { stationId: allStas[i].id },
+    });
+  }
+
+  // ── 7. Alerts ──────────────────────────────────────────────────
   console.log("  → Creating alerts...");
   const blueLineId = (await prisma.line.findFirst({ where: { color: "BLUE" } }))!.id;
   const redLineId = (await prisma.line.findFirst({ where: { color: "RED" } }))!.id;
@@ -525,7 +498,7 @@ async function main() {
     });
   }
 
-  // ── 7. Passenger Records (24h data for multiple stations) ──────
+  // ── 8. Passenger Records (24h data for multiple stations) ──────
   console.log("  → Creating passenger records...");
   const sampleStations = allStations.slice(0, 15);
   for (const st of sampleStations) {
@@ -551,7 +524,7 @@ async function main() {
     }
   }
 
-  // ── 8. System Health Records ────────────────────────────────────
+  // ── 9. System Health Records ────────────────────────────────────
   console.log("  → Creating system health records...");
   for (let h = 0; h < 48; h++) {
     const health = 99.5 - Math.random() * 1.5;
@@ -564,7 +537,7 @@ async function main() {
     });
   }
 
-  // ── 9. Fleet Records ────────────────────────────────────────────
+  // ── 10. Fleet Records ───────────────────────────────────────────
   console.log("  → Creating fleet records...");
   const totalTrains = await prisma.train.count();
   const activeTrains = await prisma.train.count({ where: { status: "ACTIVE" } });
@@ -580,7 +553,7 @@ async function main() {
     },
   });
 
-  // ── 10. Sample Trips ───────────────────────────────────────────
+  // ── 11. Sample Trips ───────────────────────────────────────────
   console.log("  → Creating sample trips...");
   const trains = await prisma.train.findMany({ take: 20 });
   for (const train of trains) {
@@ -606,7 +579,7 @@ async function main() {
     });
   }
 
-  // ── 11. Maintenance Records ─────────────────────────────────────
+  // ── 12. Maintenance Records ─────────────────────────────────────
   console.log("  → Creating maintenance records...");
   const maintenanceTypes = ["preventive", "corrective", "emergency"];
   const maintenanceStatuses: string[] = ["COMPLETED", "SCHEDULED", "ACTIVE"];
@@ -628,7 +601,7 @@ async function main() {
     });
   }
 
-  // ── 12. Notifications ──────────────────────────────────────────
+  // ── 13. Notifications ──────────────────────────────────────────
   console.log("  → Creating notifications...");
   const notifTitles = [
     { title: "New alert on Blue Line", message: "Critical: Train B-001 breakdown" },
@@ -649,7 +622,7 @@ async function main() {
     });
   }
 
-  // ── 13. Audit Log entries ──────────────────────────────────────
+  // ── 14. Audit Log entries ──────────────────────────────────────
   console.log("  → Creating audit logs...");
   const auditActions = ["login", "create_alert", "update_train", "view_dashboard", "manage_users"];
   for (let i = 0; i < 10; i++) {
@@ -662,13 +635,13 @@ async function main() {
     });
   }
 
-  // ── 14. Settings ───────────────────────────────────────────────
+  // ── 15. Settings ───────────────────────────────────────────────
   console.log("  → Creating settings...");
   for (const s of SETTINGS_DATA) {
     await prisma.settings.create({ data: { key: s.key, value: s.value } });
   }
 
-  // ── 15. Chat Messages (sample) ─────────────────────────────────
+  // ── 16. Chat Messages (sample) ─────────────────────────────────
   console.log("  → Creating sample chat messages...");
   await prisma.chatMessage.create({
     data: {
@@ -683,6 +656,34 @@ async function main() {
       metadata: JSON.stringify({ line: "BLUE", activeTrains: 9, maintenanceTrains: 1 }),
     },
   });
+
+  // ── 17. Incident Reports ─────────────────────────────────────────
+  console.log("  → Creating sample incident reports...");
+  const securityUsers = createdUsers.filter(u => u.roleId === securityRole.id);
+  const incidentStations = await prisma.station.findMany({ take: 5 });
+  if (incidentStations.length > 0 && securityUsers.length > 0) {
+    const incidents = [
+      { type: "SUSPICIOUS", description: "شخص مشبوه يحاول تجاوز البوابات الإلكترونية", stationId: incidentStations[0].id, priority: "HIGH" },
+      { type: "DAMAGE", description: "تخريب في جهاز التذاكر بالرصيف رقم 2", stationId: incidentStations[1].id, priority: "MEDIUM" },
+      { type: "MEDICAL", description: "شخص بحاجة إلى إسعاف في المدخل الرئيسي", stationId: incidentStations[2].id, priority: "HIGH" },
+      { type: "THEFT", description: "سرقة هاتف من أحد الركاب", stationId: incidentStations[3].id, priority: "MEDIUM" },
+      { type: "FIRE", description: "انبعاث دخان من صندوق كهربائي", stationId: incidentStations[4].id, priority: "CRITICAL", status: "RESOLVED" },
+    ];
+    for (const inc of incidents) {
+      await prisma.incidentReport.create({
+        data: {
+          type: inc.type,
+          description: inc.description,
+          stationId: inc.stationId,
+          priority: inc.priority,
+          status: inc.status || "OPEN",
+          reportedById: securityUsers[0].id,
+          assignedToId: securityUsers[inc.type === "FIRE" ? 1 : 0].id,
+          ...(inc.status === "RESOLVED" ? { resolvedAt: new Date() } : {}),
+        },
+      });
+    }
+  }
 
   console.log("✅ Seeding complete!");
   console.log(`   Lines: ${LINES.length}`);

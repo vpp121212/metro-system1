@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Cairo, Inter } from 'next/font/google'
 import { ThemeProvider } from 'next-themes'
 import { Toaster } from 'sonner'
+import { AuthProvider } from '@/lib/auth-context'
 import AppLayout from '@/components/layout/AppLayout'
 import './globals.css'
 
@@ -37,9 +38,11 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <AppLayout>
-            {children}
-          </AppLayout>
+          <AuthProvider>
+            <AppLayout>
+              {children}
+            </AppLayout>
+          </AuthProvider>
           <Toaster theme="dark" position="top-center" />
         </ThemeProvider>
       </body>

@@ -86,27 +86,55 @@ export default function MapPage() {
   const [activeFilter, setActiveFilter] = useState('all')
   const [selected, setSelected] = useState<SelectedItem | null>(null)
   const [zoom, setZoom] = useState(1)
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null)
+  const [prevTrains, setPrevTrains] = useState<Record<string, { lat: number; lng: number }>>({})
+  const [animatingTrains, setAnimatingTrains] = useState<Set<string>>(new Set())
   const svgRef = useRef<SVGSVGElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
   const [dimensions, setDimensions] = useState({ width: 800, height: 600 })
 
-  useEffect(() => {
-    async function fetchMapData() {
-      try {
-        const [linesRes, trainsRes] = await Promise.all([
-          fetch('/api/map/lines'),
-          fetch('/api/map/trains'),
-        ])
-        if (linesRes.ok) setLines(await linesRes.json())
-        if (trainsRes.ok) setTrains(await trainsRes.json())
-      } catch {
-        // handle error silently
-      } finally {
-        setLoading(false)
+  async function fetchMapData() {
+    try {
+      const [linesRes, trainsRes] = await Promise.all([
+        fetch('/api/map/lines'),
+        fetch('/api/map/trains'),
+      ])
+      if (linesRes.ok && !lines.length) setLines(await linesRes.json())
+
+      if (trainsRes.ok) {
+        const newTrains: TrainPosition[] = await trainsRes.json()
+        const changed = new Set<string>()
+        const prevMap: Record<string, { lat: number; lng: number }> = {}
+        for (const t of newTrains) {
+          prevMap[t.id] = { lat: t.lat, lng: t.lng }
+          const old = prevTrains[t.id]
+          if (old && (old.lat !== t.lat || old.lng !== t.lng)) {
+            changed.add(t.id)
+          }
+        }
+        setAnimatingTrains(changed)
+        setTrains(newTrains)
+        setPrevTrains(prevMap)
+        setLastUpdated(new Date())
       }
+    } catch {
+    } finally {
+      setLoading(false)
     }
+  }
+
+  useEffect(() => {
     fetchMapData()
+    const interval = setInterval(fetchMapData, 8000)
+    return () => clearInterval(interval)
   }, [])
+
+  useEffect(() => {
+    if (animatingTrains.size > 0) {
+      const timer = setTimeout(() => setAnimatingTrains(new Set()), 1000)
+      return () => clearTimeout(timer)
+    }
+  }, [animatingTrains])
 
   useEffect(() => {
     const updateDimensions = () => {
@@ -175,6 +203,13 @@ export default function MapPage() {
               </button>
             ))}
           </div>
+
+          {/* Last Updated */}
+          {lastUpdated && (
+            <div className="absolute top-3 left-3 z-20 px-2.5 py-1 rounded-full bg-t-card/80 border border-t-border/40 text-[10px] text-gray-500">
+              آخر تحديث: {lastUpdated.toLocaleTimeString('ar-SA')}
+            </div>
+          )}
 
           {/* Zoom Controls */}
           <div className="absolute bottom-3 right-3 z-20 flex flex-col gap-1.5">
@@ -297,6 +332,7 @@ export default function MapPage() {
                 {filteredTrains.map((train) => {
                   const pos = latLngToPixel(train.lat, train.lng, w, h)
                   const isSelected = selected?.type === 'train' && selected.data.id === train.id
+                  const dir = train.direction === 'forward' ? 1 : -1
                   return (
                     <g
                       key={train.id}
@@ -331,11 +367,28 @@ export default function MapPage() {
                         stroke="#060b18"
                         strokeWidth={2}
                       />
-                      <circle
-                        cx={pos.x}
-                        cy={pos.y}
-                        r={1.5}
+                      {/* Direction arrow */}
+                      <line
+                        x1={pos.x}
+                        y1={pos.y - (isSelected ? 10 : 8) * dir}
+                        x2={pos.x}
+                        y2={pos.y - (isSelected ? 4 : 3) * dir}
+                        stroke="white"
+                        strokeWidth={1.5}
+                        strokeLinecap="round"
+                        opacity={0.7}
+                      >
+                        {animatingTrains.has(train.id) && (
+                          <>
+                            <animate attributeName="x1" values={`${pos.x};${pos.x + 3};${pos.x}`} dur="0.3s" repeatCount="1" />
+                            <animate attributeName="x2" values={`${pos.x};${pos.x + 3};${pos.x}`} dur="0.3s" repeatCount="1" />
+                          </>
+                        )}
+                      </line>
+                      <polygon
+                        points={`${pos.x - 3},${pos.y - (isSelected ? 12 : 10) * dir} ${pos.x + 3},${pos.y - (isSelected ? 12 : 10) * dir} ${pos.x},${pos.y - (isSelected ? 15 : 12.5) * dir}`}
                         fill="white"
+                        opacity={0.7}
                       />
                     </g>
                   )

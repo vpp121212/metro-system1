@@ -24,6 +24,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { cn } from '@/lib/utils'
+import { useAuth } from '@/lib/auth-context'
 
 const pageTitles: Record<string, { ar: string; en: string }> = {
   '/dashboard': { ar: 'لوحة التحكم', en: 'Dashboard' },
@@ -55,6 +56,7 @@ interface HeaderProps {
 
 export default function Header({ onMenuClick, sidebarCollapsed }: HeaderProps) {
   const pathname = usePathname()
+  const { user, logout } = useAuth()
   const [time, setTime] = useState<string>('')
   const [date, setDate] = useState<string>('')
 
@@ -152,7 +154,7 @@ export default function Header({ onMenuClick, sidebarCollapsed }: HeaderProps) {
           <Button variant="ghost" className="relative h-9 w-9 rounded-full shrink-0">
             <Avatar className="h-9 w-9 border-2 border-t-border/50">
               <AvatarFallback className="bg-gradient-to-br from-t-blue to-t-purple text-white text-sm font-bold">
-                OA
+                {user?.name?.charAt(0) || 'U'}
               </AvatarFallback>
             </Avatar>
           </Button>
@@ -163,21 +165,18 @@ export default function Header({ onMenuClick, sidebarCollapsed }: HeaderProps) {
         >
           <DropdownMenuLabel className="font-normal">
             <div className="flex flex-col gap-1">
-              <p className="text-sm font-medium text-white">مشرف النظام</p>
-              <p className="text-xs text-gray-500">admin@traineye.sa</p>
+              <p className="text-sm font-medium text-white">{user?.name || 'مستخدم'}</p>
+              <p className="text-xs text-gray-500">{user?.employeeId || ''}</p>
+              <p className="text-xs text-t-cyan">{user?.role === 'OPERATIONS' ? 'عمليات' : user?.role === 'STATION_MANAGER' ? 'مدير محطة' : user?.role === 'SECURITY' ? 'أمن' : ''}</p>
             </div>
           </DropdownMenuLabel>
           <DropdownMenuSeparator className="bg-t-border/50" />
-          <DropdownMenuItem className="text-gray-400 focus:text-white focus:bg-t-card cursor-pointer gap-2">
-            <User className="h-4 w-4" />
-            <span>الملف الشخصي</span>
-          </DropdownMenuItem>
-          <DropdownMenuItem className="text-gray-400 focus:text-white focus:bg-t-card cursor-pointer gap-2">
+          <DropdownMenuItem className="text-gray-400 focus:text-white focus:bg-t-card cursor-pointer gap-2" onClick={() => window.location.href = '/settings'}>
             <Settings className="h-4 w-4" />
             <span>الإعدادات</span>
           </DropdownMenuItem>
           <DropdownMenuSeparator className="bg-t-border/50" />
-          <DropdownMenuItem className="text-t-red focus:text-t-red focus:bg-t-red/10 cursor-pointer gap-2">
+          <DropdownMenuItem className="text-t-red focus:text-t-red focus:bg-t-red/10 cursor-pointer gap-2" onClick={logout}>
             <LogOut className="h-4 w-4" />
             <span>تسجيل الخروج</span>
           </DropdownMenuItem>

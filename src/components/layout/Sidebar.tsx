@@ -30,8 +30,11 @@ import {
   PanelLeftClose,
   PanelLeftOpen,
   Activity,
+  LogOut,
+  AlertTriangle,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { useAuth } from '@/lib/auth-context'
 
 interface NavItem {
   labelAr: string
@@ -46,6 +49,10 @@ interface NavGroup {
   titleEn: string
   items: NavItem[]
 }
+
+const extraNavItems: NavItem[] = [
+  { labelAr: 'تقارير الحوادث', labelEn: 'Incidents', href: '/incidents', icon: <AlertTriangle className="h-5 w-5" /> },
+]
 
 const navigationGroups: NavGroup[] = [
   {
@@ -93,6 +100,7 @@ const navigationGroups: NavGroup[] = [
       { labelAr: 'الصلاحيات', labelEn: 'Roles', href: '/roles', icon: <Shield className="h-5 w-5" /> },
       { labelAr: 'الأذونات', labelEn: 'Permissions', href: '/permissions', icon: <Key className="h-5 w-5" /> },
       { labelAr: 'سجل التدقيق', labelEn: 'Audit Logs', href: '/audit-logs', icon: <ScrollText className="h-5 w-5" /> },
+      { labelAr: 'تقارير الحوادث', labelEn: 'Incidents', href: '/incidents', icon: <AlertTriangle className="h-5 w-5" /> },
     ],
   },
   {
@@ -115,6 +123,7 @@ interface SidebarProps {
 
 export default function Sidebar({ open, collapsed, onClose, onToggleCollapse }: SidebarProps) {
   const pathname = usePathname()
+  const { user, logout } = useAuth()
   const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>(
     Object.fromEntries(navigationGroups.map((g) => [g.titleEn, true]))
   )
@@ -298,7 +307,27 @@ export default function Sidebar({ open, collapsed, onClose, onToggleCollapse }: 
             )}
           </div>
         </div>
+
+        <div className={cn(
+          'border-t border-t-border/50 p-3 shrink-0',
+          collapsed && 'px-2'
+        )}>
+          <button
+            onClick={logout}
+            className={cn(
+              'flex items-center gap-3 rounded-lg px-3 py-2.5 w-full transition-colors',
+              'text-gray-400 hover:text-t-red hover:bg-t-red/10',
+              collapsed && 'justify-center px-2'
+            )}
+          >
+            <LogOut className="h-4 w-4 shrink-0" />
+            {!collapsed && (
+              <span className="text-sm font-medium truncate">تسجيل الخروج</span>
+            )}
+          </button>
+        </div>
       </aside>
     </>
   )
 }
+

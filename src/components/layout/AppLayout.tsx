@@ -1,6 +1,7 @@
 'use client'
 
 import { ReactNode, useState } from 'react'
+import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import Sidebar from './Sidebar'
 import Header from './Header'
@@ -12,6 +13,12 @@ interface AppLayoutProps {
 export default function AppLayout({ children }: AppLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
+  const pathname = usePathname()
+  const isAuthPage = pathname === '/login'
+
+  if (isAuthPage) {
+    return <>{children}</>
+  }
 
   return (
     <div className="flex h-screen overflow-hidden bg-t-dark">
