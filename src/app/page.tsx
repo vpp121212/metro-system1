@@ -12,7 +12,7 @@ export default function Home() {
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowSplash(false)
-      setTimeout(() => router.push('/dashboard'), 300)
+      setTimeout(() => router.push('/map'), 300)
     }, 2000)
     return () => clearTimeout(timer)
   }, [router])

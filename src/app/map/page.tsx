@@ -1,8 +1,7 @@
 'use client'
 
 import { useState, useRef, useCallback } from 'react'
-import MetroMap, { MetroMapHandle } from '@/components/map/MetroMap'
-import TopBar from '@/components/map/TopBar'
+import MetroMap, { type MetroMapHandle } from '@/components/map/MetroMap'
 import SidePanel from '@/components/map/SidePanel'
 import BottomPanel from '@/components/map/BottomPanel'
 import AIPanel from '@/components/map/AIPanel'
@@ -110,7 +109,7 @@ export default function CommandCenterPage() {
   }, [trains])
 
   return (
-    <div className="relative w-full h-[calc(100vh-4rem)] bg-[#060b18] overflow-hidden -m-4 md:-m-6 lg:-m-8" dir="ltr">
+    <div className="relative w-full h-full bg-[#060b18] overflow-hidden" dir="ltr">
       {/* Map Layer */}
       <MetroMap
         ref={mapRef}
@@ -118,13 +117,6 @@ export default function CommandCenterPage() {
         showAlerts={showAlerts}
         onStationClick={handleStationClick}
         onTrainClick={handleTrainClick}
-      />
-
-      {/* Top Bar */}
-      <TopBar
-        onSearch={handleSearch}
-        onToggleNotifications={() => {}}
-        onToggleProfile={() => {}}
       />
 
       {/* Side Panel */}
