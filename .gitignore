@@ -1,8 +1,11 @@
 node_modules/
-__pycache__/
-*.pyc
-*.pyo
-.env
-venv/
+.next/
 *.db
+.env
+.env.local
+.env.production
 dist/
+.next/
+out/
+*.tsbuildinfo
+next-env.d.ts
