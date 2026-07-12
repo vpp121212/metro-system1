@@ -14,8 +14,17 @@ interface SidePanelProps {
 }
 
 export default function SidePanel({ activeFilter, onFilterChange, stats }: SidePanelProps) {
-  const [collapsed, setCollapsed] = useState(false)
+  const [collapsed, setCollapsed] = useState(true)
+  const [isMobile, setIsMobile] = useState(false)
   const [now, setNow] = useState(new Date())
+
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 639px)')
+    setIsMobile(mq.matches)
+    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches)
+    mq.addEventListener('change', handler)
+    return () => mq.removeEventListener('change', handler)
+  }, [])
 
   useEffect(() => {
     const id = setInterval(() => setNow(new Date()), 1000)
@@ -37,7 +46,7 @@ export default function SidePanel({ activeFilter, onFilterChange, stats }: SideP
     <>
       <button
         onClick={() => setCollapsed(!collapsed)}
-        className="absolute top-20 right-4 z-30 w-9 h-9 rounded-xl glass flex items-center justify-center text-gray-400 hover:text-white transition-colors pointer-events-auto"
+        className="absolute top-20 max-sm:top-4 right-4 z-30 w-9 h-9 rounded-xl glass flex items-center justify-center text-gray-400 hover:text-white transition-colors pointer-events-auto"
       >
         {collapsed ? <Menu className="h-4 w-4" /> : <X className="h-4 w-4" />}
       </button>
@@ -49,7 +58,7 @@ export default function SidePanel({ activeFilter, onFilterChange, stats }: SideP
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -20 }}
             transition={{ duration: 0.2 }}
-            className="absolute top-36 right-4 z-20 w-56 pointer-events-none"
+            className="absolute top-36 max-sm:top-14 right-4 max-sm:right-2 z-20 w-56 max-sm:w-[calc(100%-1rem)] pointer-events-none"
           >
             <div className="pointer-events-auto glass-card rounded-2xl p-3 space-y-3">
               {/* Quick Stats */}

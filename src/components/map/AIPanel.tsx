@@ -68,7 +68,7 @@ export default function AIPanel({ open, onToggle }: AIPanelProps) {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 20 }}
             transition={{ duration: 0.2 }}
-            className="absolute top-28 left-4 z-20 w-72 pointer-events-none"
+            className="absolute top-28 left-4 max-sm:left-2 z-20 w-72 max-sm:w-[calc(100%-1rem)] pointer-events-none"
           >
             <div className="pointer-events-auto glass-card rounded-2xl p-3 space-y-3">
               {/* Header */}

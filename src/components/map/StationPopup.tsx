@@ -27,7 +27,7 @@ export default function StationPopup({ station, onClose }: StationPopupProps) {
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: 10, scale: 0.95 }}
           transition={{ duration: 0.15 }}
-          className="absolute bottom-24 right-4 z-30 w-72 pointer-events-none"
+          className="absolute bottom-24 max-sm:bottom-4 right-4 max-sm:right-2 z-30 w-72 max-sm:w-[calc(100%-1rem)] pointer-events-none"
         >
           <div className="pointer-events-auto glass-card rounded-2xl p-3">
             <div className="flex items-start justify-between mb-2">
