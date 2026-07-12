@@ -15,6 +15,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const pathname = usePathname()
   const isAuthPage = pathname === '/login'
+  const isMapPage = pathname === '/map'
 
   if (isAuthPage) {
     return <>{children}</>
@@ -33,11 +34,16 @@ export default function AppLayout({ children }: AppLayoutProps) {
         'lg:ps-[260px]',
         sidebarCollapsed && 'lg:ps-[72px]'
       )}>
-        <Header
-          onMenuClick={() => setSidebarOpen(true)}
-          sidebarCollapsed={sidebarCollapsed}
-        />
-        <main className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8">
+        {!isMapPage && (
+          <Header
+            onMenuClick={() => setSidebarOpen(true)}
+            sidebarCollapsed={sidebarCollapsed}
+          />
+        )}
+        <main className={cn(
+          'flex-1',
+          isMapPage ? 'overflow-hidden' : 'overflow-y-auto p-4 md:p-6 lg:p-8'
+        )}>
           {children}
         </main>
       </div>
