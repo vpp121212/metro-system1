@@ -41,7 +41,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
           />
         )}
         <main className={cn(
-          'flex-1',
+          'flex-1 relative',
           isMapPage ? 'overflow-hidden' : 'overflow-y-auto p-4 md:p-6 lg:p-8'
         )}>
           {children}
