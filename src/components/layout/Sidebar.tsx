@@ -42,17 +42,15 @@ interface NavItem {
   href: string
   icon: ReactNode
   badge?: number
+  roles?: string[]
 }
 
 interface NavGroup {
   titleAr: string
   titleEn: string
   items: NavItem[]
+  roles?: string[]
 }
-
-const extraNavItems: NavItem[] = [
-  { labelAr: 'تقارير الحوادث', labelEn: 'Incidents', href: '/incidents', icon: <AlertTriangle className="h-5 w-5" /> },
-]
 
 const navigationGroups: NavGroup[] = [
   {
@@ -66,6 +64,7 @@ const navigationGroups: NavGroup[] = [
   {
     titleAr: 'التشغيل',
     titleEn: 'Operations',
+    roles: ['OPERATIONS'],
     items: [
       { labelAr: 'القطارات', labelEn: 'Trains', href: '/trains', icon: <Train className="h-5 w-5" /> },
       { labelAr: 'المحطات', labelEn: 'Stations', href: '/stations', icon: <Building2 className="h-5 w-5" /> },
@@ -78,6 +77,7 @@ const navigationGroups: NavGroup[] = [
   {
     titleAr: 'التقارير والتحليلات',
     titleEn: 'Analytics & Reports',
+    roles: ['OPERATIONS'],
     items: [
       { labelAr: 'التحليلات', labelEn: 'Analytics', href: '/analytics', icon: <BarChart3 className="h-5 w-5" /> },
       { labelAr: 'التقارير', labelEn: 'Reports', href: '/reports', icon: <FileText className="h-5 w-5" /> },
@@ -87,6 +87,7 @@ const navigationGroups: NavGroup[] = [
   {
     titleAr: 'الأسطول والصيانة',
     titleEn: 'Fleet & Maintenance',
+    roles: ['OPERATIONS'],
     items: [
       { labelAr: 'الصيانة', labelEn: 'Maintenance', href: '/maintenance', icon: <Wrench className="h-5 w-5" /> },
       { labelAr: 'الأسطول', labelEn: 'Fleet', href: '/fleet', icon: <Truck className="h-5 w-5" /> },
@@ -95,12 +96,28 @@ const navigationGroups: NavGroup[] = [
   {
     titleAr: 'الإدارة',
     titleEn: 'Administration',
+    roles: ['OPERATIONS'],
     items: [
       { labelAr: 'المستخدمين', labelEn: 'Users', href: '/users', icon: <Users className="h-5 w-5" /> },
       { labelAr: 'الصلاحيات', labelEn: 'Roles', href: '/roles', icon: <Shield className="h-5 w-5" /> },
       { labelAr: 'الأذونات', labelEn: 'Permissions', href: '/permissions', icon: <Key className="h-5 w-5" /> },
       { labelAr: 'سجل التدقيق', labelEn: 'Audit Logs', href: '/audit-logs', icon: <ScrollText className="h-5 w-5" /> },
+    ],
+  },
+  {
+    titleAr: 'الأمن',
+    titleEn: 'Security',
+    roles: ['OPERATIONS', 'SECURITY'],
+    items: [
       { labelAr: 'تقارير الحوادث', labelEn: 'Incidents', href: '/incidents', icon: <AlertTriangle className="h-5 w-5" /> },
+    ],
+  },
+  {
+    titleAr: 'التنبيهات',
+    titleEn: 'Alerts',
+    roles: ['OPERATIONS', 'STATION_MANAGER'],
+    items: [
+      { labelAr: 'التنبيهات', labelEn: 'Alerts', href: '/alerts', icon: <BellDot className="h-5 w-5" />, badge: 3 },
     ],
   },
   {
@@ -191,7 +208,7 @@ export default function Sidebar({ open, collapsed, onClose, onToggleCollapse }: 
         </div>
 
         <nav className="flex-1 overflow-y-auto py-3 px-2 space-y-1">
-          {navigationGroups.map((group) => (
+          {navigationGroups.filter(group => !group.roles || !user || group.roles.includes(user.role)).map((group) => (
             <div key={group.titleEn} className="mb-1">
               {!collapsed && (
                 <button
