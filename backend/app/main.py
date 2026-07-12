@@ -1,21 +1,35 @@
-import os
-import ipaddress
+from pathlib import Path
+from contextlib import asynccontextmanager
 
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
-from starlette.middleware.base import BaseHTTPMiddleware
+from fastapi.responses import FileResponse
 
-from .database import engine, Base
-from .routers import incidents, kpi
+from .database import engine, Base, SessionLocal
+from .seed import run_seed
+from .routers import (
+    dashboard, map, cameras, analytics,
+    alerts, simulation, reports, settings,
+)
 
-Base.metadata.create_all(bind=engine)
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    Base.metadata.create_all(bind=engine)
+    db = SessionLocal()
+    try:
+        run_seed(db)
+    finally:
+        db.close()
+    yield
+
 
 app = FastAPI(
-    title="Smart Metro Operations Management System",
-    description="Smart Metro Station Operations Management System",
-    version="2.0.0",
+    title="TrainEye API",
+    description="Riyadh Metro Command Center Dashboard Backend",
+    version="1.0.0",
+    lifespan=lifespan,
 )
 
 app.add_middleware(
@@ -26,29 +40,28 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(incidents.router)
-app.include_router(kpi.router)
+app.include_router(dashboard.router)
+app.include_router(map.router)
+app.include_router(cameras.router)
+app.include_router(analytics.router)
+app.include_router(alerts.router)
+app.include_router(simulation.router)
+app.include_router(reports.router)
+app.include_router(settings.router)
 
 
 @app.get("/api/health")
 def health_check():
-    return {"status": "ok", "message": "Smart Metro Operations System is running"}
+    return {"status": "ok", "service": "TrainEye API", "version": "1.0.0"}
 
 
-static_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "static")
-assets_dir = os.path.join(static_dir, "assets")
-if os.path.isdir(assets_dir):
-    app.mount("/assets", StaticFiles(directory=assets_dir), name="assets")
+static_dir = Path(__file__).resolve().parent.parent / "static"
+if static_dir.exists():
+    app.mount("/assets", StaticFiles(directory=str(static_dir / "assets")), name="assets") if (static_dir / "assets").exists() else None
 
-
-if os.path.isdir(static_dir):
     @app.get("/{full_path:path}")
     async def serve_spa(full_path: str):
-        index_path = os.path.join(static_dir, "index.html")
-        if os.path.isfile(index_path):
-            return FileResponse(index_path, media_type="text/html")
-        raise HTTPException(status_code=404, detail="Not found")
-else:
-    @app.get("/{full_path:path}")
-    async def not_found(full_path: str):
-        raise HTTPException(status_code=404, detail="Not found")
+        file_path = static_dir / full_path
+        if file_path.is_file():
+            return FileResponse(str(file_path))
+        return FileResponse(str(static_dir / "index.html"))

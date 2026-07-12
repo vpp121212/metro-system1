@@ -1,11 +1,4 @@
-pip>=24.0
-setuptools>=70.0.0
-wheel>=0.43.0
-fastapi>=0.110.0
-uvicorn>=0.29.0
-sqlalchemy>=2.0.30
-pydantic>=2.7.0
-pydantic-settings>=2.3.0
-reportlab>=4.2.0
-gunicorn>=22.0.0
-python-multipart>=0.0.12
+fastapi==0.115.12
+uvicorn[standard]==0.34.2
+sqlalchemy==2.0.41
+pydantic==2.11.3
