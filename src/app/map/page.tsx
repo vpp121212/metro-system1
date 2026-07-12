@@ -110,7 +110,7 @@ export default function CommandCenterPage() {
   }, [trains])
 
   return (
-    <div className="fixed inset-0 z-50 bg-[#060b18] overflow-hidden" dir="ltr">
+    <div className="relative w-full h-[calc(100vh-4rem)] bg-[#060b18] overflow-hidden -m-4 md:-m-6 lg:-m-8" dir="ltr">
       {/* Map Layer */}
       <MetroMap
         ref={mapRef}

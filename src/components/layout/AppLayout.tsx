@@ -15,9 +15,8 @@ export default function AppLayout({ children }: AppLayoutProps) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const pathname = usePathname()
   const isAuthPage = pathname === '/login'
-  const isMapPage = pathname.startsWith('/map')
 
-  if (isAuthPage || isMapPage) {
+  if (isAuthPage) {
     return <>{children}</>
   }
 
