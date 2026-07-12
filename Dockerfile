@@ -30,4 +30,4 @@ USER nextjs
 EXPOSE 3000
 ENV PORT=3000
 ENV DATABASE_URL="file:./prisma/traineye.db"
-CMD sh -c "npx prisma db push && npx prisma db seed && npm run start"
+CMD sh -c "rm -f prisma/traineye.db && npx prisma db push && npx prisma db seed && npm run start"
