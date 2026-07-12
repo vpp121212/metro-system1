@@ -1,10 +1,13 @@
 services:
   - type: web
     name: traineye-ai
-    runtime: docker
-    region: frankfurt
+    runtime: node
     plan: free
-    healthCheckPath: /api/health
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    healthCheckPath: /map
     envVars:
       - key: NODE_VERSION
         value: 20
+      - key: DATABASE_URL
+        value: file:./prisma/traineye.db
