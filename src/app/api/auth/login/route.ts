@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server'
-import { cookies } from 'next/headers'
 import bcrypt from 'bcryptjs'
 import { prisma } from '@/lib/prisma'
 
@@ -24,14 +23,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'رقم الموظف أو كلمة المرور غير صحيحة' }, { status: 401 })
     }
 
-    const cookieStore = await cookies()
-    cookieStore.set('session', user.id, {
-      path: '/',
-      maxAge: 60 * 60 * 24,
-      sameSite: 'lax',
-    })
-
-    return NextResponse.json({
+    const response = NextResponse.json({
       user: {
         id: user.id,
         employeeId: user.employeeId,
@@ -42,6 +34,14 @@ export async function POST(request: Request) {
         stationName: user.station?.nameAr || null,
       },
     })
+
+    response.cookies.set('session', user.id, {
+      path: '/',
+      maxAge: 60 * 60 * 24,
+      sameSite: 'lax',
+    })
+
+    return response
   } catch {
     return NextResponse.json({ error: 'خطأ في الخادم' }, { status: 500 })
   }
