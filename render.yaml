@@ -5,7 +5,6 @@ services:
     plan: free
     buildCommand: npm install && npx prisma generate && npm run build
     startCommand: npx prisma db push && npx prisma db seed && npm start
-    startCommand: npm start
     healthCheckPath: /map
     envVars:
       - key: NODE_VERSION
