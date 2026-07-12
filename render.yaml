@@ -3,7 +3,7 @@ services:
     name: traineye-ai
     runtime: node
     plan: free
-    buildCommand: npm install && npm run build
+    buildCommand: npm install && npx prisma db push && npx prisma db seed && npm run build
     startCommand: npm start
     healthCheckPath: /map
     envVars:
