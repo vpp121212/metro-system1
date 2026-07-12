@@ -143,12 +143,12 @@ export default function Sidebar({ open, collapsed, onClose, onToggleCollapse }: 
 
       <aside
         className={cn(
-          'fixed top-0 z-50 h-screen flex flex-col transition-all duration-300 ease-in-out',
+          'fixed top-0 z-50 h-screen flex flex-col transition-transform duration-300 ease-in-out',
           'bg-t-panel/95 backdrop-blur-xl border-l border-t-border/50',
           'ltr:right-0 ltr:left-auto rtl:left-0 rtl:right-0',
           sidebarWidth,
           open ? 'translate-x-0' : 'ltr:translate-x-full rtl:-translate-x-full',
-          'lg:translate-x-0 lg:sticky'
+          'lg:!translate-x-0'
         )}
       >
         <div className={cn(
