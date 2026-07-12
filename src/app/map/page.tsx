@@ -266,19 +266,19 @@ export default function MapPage() {
                         d={path}
                         fill="none"
                         stroke={line.colorHex}
-                        strokeWidth={3}
+                        strokeWidth={5}
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                        opacity={0.3}
+                        opacity={0.25}
                       />
                       <path
                         d={path}
                         fill="none"
                         stroke={line.colorHex}
-                        strokeWidth={2}
+                        strokeWidth={3}
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                        opacity={0.8}
+                        opacity={0.9}
                       />
                     </g>
                   )
@@ -323,6 +323,16 @@ export default function MapPage() {
                             fill={line.colorHex}
                           />
                         )}
+                        <text
+                          x={pos.x}
+                          y={pos.y + (isSelected ? 18 : 15)}
+                          textAnchor="middle"
+                          fill={isSelected ? line.colorHex : '#9ca3af'}
+                          fontSize={isSelected ? 10 : 8}
+                          className="select-none"
+                        >
+                          {station.nameAr}
+                        </text>
                       </g>
                     )
                   })

@@ -32,6 +32,7 @@ import {
   Activity,
   LogOut,
   AlertTriangle,
+  Camera,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useAuth } from '@/lib/auth-context'
@@ -59,6 +60,7 @@ const navigationGroups: NavGroup[] = [
     items: [
       { labelAr: 'لوحة التحكم', labelEn: 'Dashboard', href: '/dashboard', icon: <LayoutDashboard className="h-5 w-5" /> },
       { labelAr: 'الخريطة المباشرة', labelEn: 'Live Map', href: '/map', icon: <Map className="h-5 w-5" /> },
+      { labelAr: 'الكاميرات', labelEn: 'Cameras', href: '/cameras', icon: <Camera className="h-5 w-5" /> },
     ],
   },
   {
