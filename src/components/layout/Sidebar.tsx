@@ -115,7 +115,7 @@ const navigationGroups: NavGroup[] = [
   {
     titleAr: 'التنبيهات',
     titleEn: 'Alerts',
-    roles: ['OPERATIONS', 'STATION_MANAGER'],
+    roles: ['OPERATIONS', 'STATION_MANAGER', 'SECURITY'],
     items: [
       { labelAr: 'التنبيهات', labelEn: 'Alerts', href: '/alerts', icon: <BellDot className="h-5 w-5" />, badge: 3 },
     ],

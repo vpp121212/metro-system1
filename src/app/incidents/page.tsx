@@ -45,7 +45,12 @@ export default function IncidentsPage() {
   const [newIncident, setNewIncident] = useState({ type: 'OTHER', description: '', stationId: '', priority: 'MEDIUM' })
   const [stations, setStations] = useState<{ id: string; nameAr: string }[]>([])
 
-  useEffect(() => { fetchIncidents(); fetchStations() }, [])
+  useEffect(() => {
+    fetchIncidents()
+    fetchStations()
+    const interval = setInterval(fetchIncidents, 5000)
+    return () => clearInterval(interval)
+  }, [])
 
   async function fetchIncidents() {
     try {
