@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Train, MapPin, AlertTriangle, BarChart3, Menu, X, Clock,
@@ -15,6 +15,23 @@ interface SidePanelProps {
 
 export default function SidePanel({ activeFilter, onFilterChange, stats }: SidePanelProps) {
   const [collapsed, setCollapsed] = useState(false)
+  const [now, setNow] = useState(new Date())
+
+  useEffect(() => {
+    const id = setInterval(() => setNow(new Date()), 1000)
+    return () => clearInterval(id)
+  }, [])
+
+  const day = now.getDay() // 0=Sun, 1=Mon, ..., 5=Fri, 6=Sat
+  const isFriday = day === 5
+  const minutes = now.getHours() * 60 + now.getMinutes()
+
+  const openStart = isFriday ? 600 : 360
+  const openEnd = 1440
+  const isOpen = minutes >= openStart && minutes < openEnd
+
+  const timeStr = now.toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true })
+  const dayNames = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت']
 
   return (
     <>
@@ -55,17 +72,21 @@ export default function SidePanel({ activeFilter, onFilterChange, stats }: SideP
               </div>
 
               {/* Operating Hours */}
-              <div className="flex items-center gap-2 px-2.5 py-2 rounded-xl bg-t-card/30 border border-t-border/30">
-                <div className="w-7 h-7 rounded-lg bg-t-green/15 flex items-center justify-center shrink-0">
-                  <Clock className="h-3.5 w-3.5 text-t-green" />
+              <div className={`flex items-center gap-2 px-2.5 py-2 rounded-xl border ${isOpen ? 'bg-t-green/10 border-t-green/30' : 'bg-t-red/10 border-t-red/30'}`}>
+                <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 ${isOpen ? 'bg-t-green/15' : 'bg-t-red/15'}`}>
+                  <Clock className={`h-3.5 w-3.5 ${isOpen ? 'text-t-green' : 'text-t-red'}`} />
                 </div>
-                <div className="min-w-0">
+                <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-1.5">
                     <span className="text-[10px] font-bold text-white">ساعات التشغيل</span>
-                    <span className="text-[8px] bg-t-green/20 text-t-green px-1.5 py-0.5 rounded-full font-medium">مباشر</span>
+                    <span className={`text-[8px] px-1.5 py-0.5 rounded-full font-medium ${
+                      isOpen ? 'bg-t-green/20 text-t-green' : 'bg-t-red/20 text-t-red'
+                    }`}>
+                      {isOpen ? 'مباشر' : 'مغلق'}
+                    </span>
                   </div>
-                  <p className="text-[9px] text-gray-500 mt-0.5">السبت - الخميس ٦:٠٠ صباحاً - ١٢:٠٠ صباحاً</p>
-                  <p className="text-[9px] text-gray-500">الجمعة ١٠:٠٠ صباحاً - ١٢:٠٠ صباحاً</p>
+                  <p className="text-[9px] text-gray-400 mt-0.5" dir="ltr">{timeStr}</p>
+                  <p className="text-[8px] text-gray-500">{dayNames[day]} | {isFriday ? '١٠:٠٠ ص - ١٢:٠٠ ص' : '٦:٠٠ ص - ١٢:٠٠ ص'}</p>
                 </div>
               </div>
 
