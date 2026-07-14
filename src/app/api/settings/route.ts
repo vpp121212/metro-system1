@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { requirePermission } from '@/lib/auth'
 
 export async function GET() {
   try {
@@ -23,6 +24,8 @@ export async function GET() {
 
 export async function PUT(request: Request) {
   try {
+    const perm = await requirePermission('manage_settings')
+    if (!perm.allowed) return perm.response
     const body = await request.json()
 
     const updates = Object.entries(body).map(([key, value]) =>

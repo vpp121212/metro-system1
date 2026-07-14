@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   X, Train, Gauge, Users, ArrowUp, ArrowDown,
-  Circle, ChevronLeft,
+  ChevronLeft,
 } from 'lucide-react'
 
 interface TrainPopupProps {
@@ -22,7 +22,7 @@ interface TrainPopupProps {
   onClose: () => void
 }
 
-const miniContent = (train: NonNullable<TrainPopupProps['train']>) => (
+const miniContent = (train: NonNullable<TrainPopupProps['train']>, onClose: () => void) => (
   <>
     <div className="flex items-start justify-between mb-2">
       <div className="flex items-center gap-2">
@@ -49,7 +49,7 @@ const miniContent = (train: NonNullable<TrainPopupProps['train']>) => (
         </div>
       </div>
       <button
-        onClick={() => {}}
+        onClick={onClose}
         className="w-6 h-6 rounded-lg bg-t-card/60 flex items-center justify-center text-gray-500 hover:text-white shrink-0 max-sm:hidden"
       >
         <X className="h-3 w-3" />
@@ -111,7 +111,7 @@ export default function TrainPopup({ train, onClose }: TrainPopupProps) {
           className="absolute bottom-24 left-4 z-30 w-72 pointer-events-none"
         >
           <div className="pointer-events-auto glass-card rounded-2xl p-3" onClick={(e) => e.stopPropagation()}>
-            {train && miniContent(train)}
+            {train && miniContent(train, onClose)}
           </div>
         </motion.div>
       )}
@@ -146,7 +146,7 @@ export default function TrainPopup({ train, onClose }: TrainPopupProps) {
               <div className="w-10 h-1 rounded-full bg-gray-600" />
             </div>
             <div className="px-5 pb-6">
-              {train && miniContent(train)}
+              {train && miniContent(train, onClose)}
             </div>
           </div>
         </motion.div>

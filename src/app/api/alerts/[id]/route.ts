@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { requirePermission } from '@/lib/auth'
 
 export async function GET(
   _request: Request,
@@ -35,6 +36,8 @@ export async function PATCH(
   { params }: { params: { id: string } }
 ) {
   try {
+    const perm = await requirePermission('manage_alerts')
+    if (!perm.allowed) return perm.response
     const body = await request.json()
 
     const existing = await prisma.alert.findUnique({
@@ -78,6 +81,8 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
+    const perm = await requirePermission('system_admin')
+    if (!perm.allowed) return perm.response
     const existing = await prisma.alert.findUnique({
       where: { id: params.id },
     })

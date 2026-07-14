@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Search, Bell, User, Settings, Clock, Wifi, Signal, ChevronDown, Sun, Moon, LogOut } from 'lucide-react'
+import { Search, Bell, Clock, Wifi, Signal, ChevronDown } from 'lucide-react'
 
 interface TopBarProps {
   onSearch?: (query: string) => void

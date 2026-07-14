@@ -1,9 +1,5 @@
 import { NextResponse } from 'next/server'
 
 export async function GET() {
-  return NextResponse.json({
-    status: 'ok',
-    service: 'TrainEye AI API',
-    version: '1.0.0',
-  })
+  return NextResponse.json({ status: 'ok' })
 }

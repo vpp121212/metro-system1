@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { Bell, AlertTriangle, AlertCircle, Info, CheckCheck, Clock, MapPin, Filter } from 'lucide-react'
+import { Bell, AlertTriangle, AlertCircle, Info, CheckCheck, Clock, MapPin } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import PageHeader from '@/components/layout/PageHeader'
 import StatCard from '@/components/layout/StatCard'

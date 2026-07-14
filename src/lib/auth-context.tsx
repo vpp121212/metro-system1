@@ -9,6 +9,7 @@ interface User {
   name: string
   email: string
   role: string
+  permissions: string[]
   stationId: string | null
   stationName: string | null
 }
@@ -68,8 +69,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   function hasPermission(permission: string): boolean {
     if (!user) return false
-    if (user.role === 'OPERATIONS') return true
-    return false
+    if (user.permissions?.includes('system_admin')) return true
+    return user.permissions?.includes(permission) ?? false
   }
 
   return (

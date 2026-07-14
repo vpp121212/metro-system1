@@ -6,17 +6,17 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        't-dark': '#060b18',
-        't-panel': '#0d1321',
-        't-card': '#141c2e',
-        't-border': '#1e2a42',
-        't-blue': '#2563eb',
-        't-cyan': '#06b6d4',
-        't-purple': '#9333ea',
-        't-red': '#ef4444',
-        't-orange': '#f97316',
-        't-yellow': '#eab308',
-        't-green': '#22c55e',
+        't-dark': 'var(--color-bg-dark)',
+        't-panel': 'var(--color-bg-panel)',
+        't-card': 'var(--color-bg-card)',
+        't-border': 'var(--color-border)',
+        't-blue': 'var(--accent-blue)',
+        't-cyan': 'var(--accent-cyan)',
+        't-purple': 'var(--accent-purple)',
+        't-red': 'var(--accent-red)',
+        't-orange': 'var(--accent-orange)',
+        't-yellow': 'var(--accent-yellow)',
+        't-green': 'var(--accent-green)',
       },
       fontFamily: {
         cairo: ['Cairo', 'sans-serif'],

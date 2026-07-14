@@ -183,8 +183,8 @@ const MetroMap = forwardRef<MetroMapHandle, MetroMapProps>(({
       container: containerRef.current,
       style: MAP_STYLE,
       center: [46.71, 24.71],
-      zoom: 11,
-      minZoom: 9,
+      zoom: 10.5,
+      minZoom: 8,
       maxZoom: 17,
       attributionControl: false,
       dragRotate: true,
@@ -277,22 +277,31 @@ const MetroMap = forwardRef<MetroMapHandle, MetroMapProps>(({
         })
       }
 
-      // Interchange stations combined source
-      const interchangedStations: GeoJSON.FeatureCollection<GeoJSON.Point> = {
-        type: 'FeatureCollection',
-        features: LINES.flatMap(line =>
-          line.stations.filter(s => s.isInterchange).map(s => ({
+      // Interchange stations combined source (deduplicated)
+      const seenInter = new Set<string>()
+      const interchangedFeatures: GeoJSON.Feature<GeoJSON.Point>[] = []
+      for (const line of LINES) {
+        for (const s of line.stations) {
+          if (!s.isInterchange) continue
+          const sk = `${s.lat.toFixed(3)}_${s.lng.toFixed(3)}`
+          if (seenInter.has(sk)) continue
+          seenInter.add(sk)
+          interchangedFeatures.push({
             type: 'Feature',
             properties: {
               id: s.id,
               nameAr: s.nameAr,
               nameEn: s.nameEn,
-              lines: LINES.filter(l => l.stations.some(st => st.lat === s.lat && st.lng === s.lng)).map(l => l.id),
-              lineColors: LINES.filter(l => l.stations.some(st => st.lat === s.lat && st.lng === s.lng)).map(l => LINE_COLORS[l.color].hex),
+              lines: LINES.filter(l => l.stations.some(st => `${st.lat.toFixed(3)}_${st.lng.toFixed(3)}` === sk)).map(l => l.id),
+              lineColors: LINES.filter(l => l.stations.some(st => `${st.lat.toFixed(3)}_${st.lng.toFixed(3)}` === sk)).map(l => LINE_COLORS[l.color].hex),
             },
             geometry: { type: 'Point', coordinates: [s.lng, s.lat] },
-          }))
-        ),
+          })
+        }
+      }
+      const interchangedStations: GeoJSON.FeatureCollection<GeoJSON.Point> = {
+        type: 'FeatureCollection',
+        features: interchangedFeatures,
       }
 
       map.addSource('interchanges', {
@@ -435,6 +444,17 @@ const MetroMap = forwardRef<MetroMapHandle, MetroMapProps>(({
         const props = e.features[0].properties
         onTrainClick?.(props)
       })
+
+      // Fit map to show all stations
+      const bounds = new maplibregl.LngLatBounds()
+      for (const line of LINES) {
+        for (const s of line.stations) {
+          bounds.extend([s.lng, s.lat])
+        }
+      }
+      if (!bounds.isEmpty()) {
+        map.fitBounds(bounds, { padding: 60, maxZoom: 13, duration: 800 })
+      }
 
       // Start animation
       animFrameRef.current = requestAnimationFrame(animateTrains)

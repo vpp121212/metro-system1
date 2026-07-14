@@ -322,55 +322,72 @@ async function main() {
 
   console.log("🚀 Seeding TrainEye AI database...");
 
-  const password = await bcrypt.hash("metro123", 10);
+  const defaultPassword = await bcrypt.hash("metro123", 12);
 
   // ── 1. Roles & Permissions ──────────────────────────────────────────
   console.log("  → Creating roles & permissions...");
 
-  const operationsRole = await prisma.role.create({
+  const adminRole = await prisma.role.create({
     data: {
-      name: "OPERATIONS",
-      description: "فريق العمليات - صلاحية كاملة على جميع الأنظمة",
+      name: "ADMIN",
+      description: "أدمن - صلاحية كاملة على جميع الأنظمة",
       permissions: { create: PERMISSIONS_LIST.map((p) => ({ name: p })) },
     },
   });
 
-  const stationMgrRole = await prisma.role.create({
+  const viewerRole = await prisma.role.create({
     data: {
-      name: "STATION_MANAGER",
-      description: "مدير محطة - يمكنه إدارة تنبيهات محطته فقط",
-      permissions: { create: [{ name: "view_dashboard" }, { name: "manage_alerts" }, { name: "view_analytics" }, { name: "view_cameras" }, { name: "view_passenger_data" }] },
+      name: "VIEWER",
+      description: "مشغل - عرض فقط، لا يمكنه التحكم في القطارات أو حذف السجلات",
+      permissions: { create: [
+        { name: "view_dashboard" },
+        { name: "view_analytics" },
+        { name: "view_cameras" },
+        { name: "view_passenger_data" },
+        { name: "view_audit_logs" },
+      ] },
     },
   });
 
-  const securityRole = await prisma.role.create({
+  const supervisorRole = await prisma.role.create({
     data: {
-      name: "SECURITY",
-      description: "فريق الأمن - يمكنه إدارة بلاغات الحوادث",
-      permissions: { create: [{ name: "view_dashboard" }, { name: "view_cameras" }, { name: "manage_alerts" }] },
+      name: "SUPERVISOR",
+      description: "مشرف - يمكنه التحكم في القطارات وإدارة التنبيهات، لكن لا يمكنه إدارة المستخدمين أو الإعدادات",
+      permissions: { create: [
+        { name: "view_dashboard" },
+        { name: "view_analytics" },
+        { name: "view_cameras" },
+        { name: "view_passenger_data" },
+        { name: "view_audit_logs" },
+        { name: "manage_trains" },
+        { name: "manage_alerts" },
+        { name: "manage_maintenance" },
+        { name: "manage_notifications" },
+        { name: "manage_stations" },
+      ] },
     },
   });
 
   // ── 2. Users (basic, no station link yet) ────────────────────────
   console.log("  → Creating users...");
   const usersData = [
-    { employeeId: "OP-001", name: "أحمد الشمري", email: "admin@traineye.sa", roleId: operationsRole.id },
-    { employeeId: "OP-002", name: "محمد العتيبي", email: "op1@traineye.sa", roleId: operationsRole.id },
-    { employeeId: "OP-003", name: "سعد القحطاني", email: "op2@traineye.sa", roleId: operationsRole.id },
-    { employeeId: "SM-001", name: "فهد المطيري", email: "sm1@traineye.sa", roleId: stationMgrRole.id },
-    { employeeId: "SM-002", name: "ناصر الدوسري", email: "sm2@traineye.sa", roleId: stationMgrRole.id },
-    { employeeId: "SM-003", name: "عبدالله الزهراني", email: "sm3@traineye.sa", roleId: stationMgrRole.id },
-    { employeeId: "SM-004", name: "خالد الغامدي", email: "sm4@traineye.sa", roleId: stationMgrRole.id },
-    { employeeId: "SM-005", name: "فيصل الحربي", email: "sm5@traineye.sa", roleId: stationMgrRole.id },
-    { employeeId: "SM-006", name: "ماجد العجمي", email: "sm6@traineye.sa", roleId: stationMgrRole.id },
-    { employeeId: "SEC-001", name: "نايف الرشيدي", email: "sec1@traineye.sa", roleId: securityRole.id },
-    { employeeId: "SEC-002", name: "بدر العنزي", email: "sec2@traineye.sa", roleId: securityRole.id },
+    { employeeId: "OP-001", name: "أحمد الشمري", email: "admin@traineye.sa", roleId: adminRole.id },
+    { employeeId: "OP-002", name: "محمد العتيبي", email: "op1@traineye.sa", roleId: supervisorRole.id },
+    { employeeId: "OP-003", name: "سعد القحطاني", email: "op2@traineye.sa", roleId: supervisorRole.id },
+    { employeeId: "SM-001", name: "فهد المطيري", email: "sm1@traineye.sa", roleId: viewerRole.id },
+    { employeeId: "SM-002", name: "ناصر الدوسري", email: "sm2@traineye.sa", roleId: viewerRole.id },
+    { employeeId: "SM-003", name: "عبدالله الزهراني", email: "sm3@traineye.sa", roleId: viewerRole.id },
+    { employeeId: "SM-004", name: "خالد الغامدي", email: "sm4@traineye.sa", roleId: viewerRole.id },
+    { employeeId: "SM-005", name: "فيصل الحربي", email: "sm5@traineye.sa", roleId: viewerRole.id },
+    { employeeId: "SM-006", name: "ماجد العجمي", email: "sm6@traineye.sa", roleId: viewerRole.id },
+    { employeeId: "SEC-001", name: "نايف الرشيدي", email: "sec1@traineye.sa", roleId: supervisorRole.id },
+    { employeeId: "SEC-002", name: "بدر العنزي", email: "sec2@traineye.sa", roleId: supervisorRole.id },
   ];
 
   const createdUsers: { id: string; employeeId: string; name: string; roleId: string }[] = [];
   for (const u of usersData) {
     const user = await prisma.user.create({
-      data: { ...u, password },
+      data: { ...u, password: defaultPassword },
     });
     createdUsers.push(user);
   }
@@ -462,7 +479,7 @@ async function main() {
 
   // ── 6. Assign Station Managers ─────────────────────────────────
   console.log("  → Assigning station managers to stations...");
-  const stationMgrUsers = createdUsers.filter(u => u.roleId === stationMgrRole.id);
+  const stationMgrUsers = createdUsers.filter(u => u.roleId === viewerRole.id);
   const allStas = await prisma.station.findMany({ orderBy: { order: "asc" }, take: stationMgrUsers.length });
   for (let i = 0; i < stationMgrUsers.length && i < allStas.length; i++) {
     await prisma.user.update({
@@ -659,7 +676,7 @@ async function main() {
 
   // ── 17. Incident Reports ─────────────────────────────────────────
   console.log("  → Creating sample incident reports...");
-  const securityUsers = createdUsers.filter(u => u.roleId === securityRole.id);
+  const securityUsers = createdUsers.filter(u => u.roleId === supervisorRole.id);
   const incidentStations = await prisma.station.findMany({ take: 5 });
   if (incidentStations.length > 0 && securityUsers.length > 0) {
     const incidents = [

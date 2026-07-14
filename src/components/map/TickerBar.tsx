@@ -33,22 +33,22 @@ export default function TickerBar() {
   const visible = items.filter(i => !dismissed.has(i.id))
 
   return (
-    <div className="relative w-full overflow-hidden" style={{ height: visible.length > 0 ? '28px' : '0px' }}>
-      <div className="absolute inset-0 bg-t-dark/90 border-b border-t-border/40 flex items-center overflow-hidden">
+    <div className="relative w-full overflow-hidden" style={{ height: visible.length > 0 ? '44px' : '0px' }}>
+      <div className="absolute inset-0 bg-gradient-to-l from-t-dark via-t-dark/95 to-t-dark border-b border-t-border/40 flex items-center overflow-hidden shadow-lg shadow-t-red/5">
         {/* Static label */}
-        <div className="shrink-0 flex items-center gap-1.5 px-3 h-full bg-t-red/20 border-l border-t-border/40 z-10">
-          <span className="relative flex h-2 w-2">
+        <div className="shrink-0 flex items-center gap-2 px-4 h-full bg-gradient-to-l from-t-red/30 to-t-red/20 border-l border-t-border/40 z-10">
+          <span className="relative flex h-2.5 w-2.5">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-t-red opacity-75" />
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-t-red" />
+            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-t-red" />
           </span>
-          <span className="text-[10px] font-bold text-t-red uppercase tracking-wider">عاجل</span>
+          <span className="text-[13px] font-bold text-t-red uppercase tracking-wider">بلاغات عاجلة</span>
         </div>
 
         {/* Scrolling messages */}
         <div className="flex-1 overflow-hidden relative">
           <div
             ref={scrollRef}
-            className="flex gap-12 whitespace-nowrap animate-ticker"
+            className="flex gap-12 whitespace-nowrap animate-ticker items-center h-full"
             style={{
               animation: 'ticker 35s linear infinite',
             }}
@@ -59,13 +59,13 @@ export default function TickerBar() {
               return (
                 <div
                   key={`${item.id}-${i}`}
-                  className={`inline-flex items-center gap-2 px-3 py-1 rounded-md ${cfg.bg} ${cfg.border} border`}
+                  className={`inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-md ${cfg.bg} ${cfg.border} border`}
                   style={{ marginLeft: i === 0 ? '0' : undefined }}
                 >
-                  <Icon className="h-3 w-3 shrink-0" />
-                  <span className="text-[11px] font-medium whitespace-nowrap">{item.message}</span>
+                  <Icon className="h-4 w-4 shrink-0" />
+                  <span className="text-[13px] font-medium whitespace-nowrap">{item.message}</span>
                   {item.line && (
-                    <span className="text-[9px] opacity-70 whitespace-nowrap">• {item.line}</span>
+                    <span className="text-[11px] opacity-70 whitespace-nowrap">• {item.line}</span>
                   )}
                 </div>
               )
@@ -74,18 +74,18 @@ export default function TickerBar() {
         </div>
 
         {/* Count */}
-        <div className="shrink-0 flex items-center gap-1 px-3 h-full border-r border-t-border/40 bg-t-dark/80 z-10">
-          <span className="text-[10px] font-bold text-t-red">{visible.length}</span>
-          <span className="text-[9px] text-gray-500">بلاغ</span>
+        <div className="shrink-0 flex items-center gap-1.5 px-4 h-full border-r border-t-border/40 bg-t-dark/80 z-10">
+          <span className="text-[13px] font-bold text-t-red">{visible.length}</span>
+          <span className="text-[11px] text-gray-400">بلاغ</span>
         </div>
 
         {/* Close all */}
         {visible.length > 0 && (
           <button
             onClick={() => setDismissed(new Set(items.map(i => i.id)))}
-            className="shrink-0 flex items-center justify-center w-7 h-full hover:bg-t-card/40 transition-colors border-r border-t-border/40"
+            className="shrink-0 flex items-center justify-center w-9 h-full hover:bg-t-card/40 transition-colors border-r border-t-border/40 group"
           >
-            <X className="h-3 w-3 text-gray-500" />
+            <X className="h-4 w-4 text-gray-500 group-hover:text-gray-300 transition-colors" />
           </button>
         )}
       </div>

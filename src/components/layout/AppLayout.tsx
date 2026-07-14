@@ -16,8 +16,9 @@ export default function AppLayout({ children }: AppLayoutProps) {
   const pathname = usePathname()
   const isAuthPage = pathname === '/login'
   const isMapPage = pathname === '/map'
+  const isPresentation = pathname === '/presentation'
 
-  if (isAuthPage) {
+  if (isAuthPage || isPresentation) {
     return <>{children}</>
   }
 

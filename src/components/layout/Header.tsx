@@ -9,10 +9,12 @@ import {
   Bell,
   Globe,
   LogOut,
-  User,
   Settings,
   Command,
+  Sun,
+  Moon,
 } from 'lucide-react'
+import { useTheme } from 'next-themes'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -57,7 +59,11 @@ interface HeaderProps {
 export default function Header({ onMenuClick, sidebarCollapsed }: HeaderProps) {
   const pathname = usePathname()
   const { user, logout } = useAuth()
+  const { theme, setTheme } = useTheme()
+  const [mounted, setMounted] = useState(false)
   const [time, setTime] = useState<string>('')
+
+  useEffect(() => { setMounted(true) }, [])
   const [date, setDate] = useState<string>('')
 
   const pageTitle = pageTitles[pathname] || { ar: 'لوحة التحكم', en: 'Dashboard' }
@@ -141,6 +147,16 @@ export default function Header({ onMenuClick, sidebarCollapsed }: HeaderProps) {
       <Button
         variant="ghost"
         size="icon"
+        onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+        className="relative text-gray-400 hover:text-white shrink-0"
+        title={theme === 'dark' ? 'الوضع النهاري' : 'الوضع الليلي'}
+      >
+        {mounted && theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+      </Button>
+
+      <Button
+        variant="ghost"
+        size="icon"
         className="relative text-gray-400 hover:text-white shrink-0"
       >
         <Bell className="h-4 w-4" />
@@ -167,7 +183,7 @@ export default function Header({ onMenuClick, sidebarCollapsed }: HeaderProps) {
             <div className="flex flex-col gap-1">
               <p className="text-sm font-medium text-white">{user?.name || 'مستخدم'}</p>
               <p className="text-xs text-gray-500">{user?.employeeId || ''}</p>
-              <p className="text-xs text-t-cyan">{user?.role === 'OPERATIONS' ? 'عمليات' : user?.role === 'STATION_MANAGER' ? 'مدير محطة' : user?.role === 'SECURITY' ? 'أمن' : ''}</p>
+              <p className="text-xs text-t-cyan">{user?.role === 'ADMIN' ? 'أدمن' : user?.role === 'SUPERVISOR' ? 'مشرف' : user?.role === 'VIEWER' ? 'مشغل' : ''}</p>
             </div>
           </DropdownMenuLabel>
           <DropdownMenuSeparator className="bg-t-border/50" />

@@ -3,7 +3,7 @@
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Train, ChevronUp, ChevronDown, Users, Gauge,
-  Circle, ArrowUp, ArrowDown,
+  ArrowUp, ArrowDown,
 } from 'lucide-react'
 
 interface TrainItem {

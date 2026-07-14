@@ -1,13 +1,12 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { Bell, CheckCheck, Filter, Info, AlertTriangle, AlertCircle, CheckCircle, Clock } from 'lucide-react'
+import { Bell, CheckCheck, Info, AlertTriangle, AlertCircle, CheckCircle, Clock } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import PageHeader from '@/components/layout/PageHeader'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
 
 interface Notification {

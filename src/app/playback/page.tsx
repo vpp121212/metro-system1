@@ -155,7 +155,7 @@ export default function PlaybackPage() {
 
             <div className="flex items-center justify-center gap-2">
               <Button variant="outline" size="icon" className="h-9 w-9" onClick={skipBackward}>
-                <SkipForward className="h-4 w-4" />
+                <SkipBack className="h-4 w-4" />
               </Button>
               <Button
                 variant={isPlaying ? 'secondary' : 'default'}
@@ -169,7 +169,7 @@ export default function PlaybackPage() {
                 <Square className="h-4 w-4" />
               </Button>
               <Button variant="outline" size="icon" className="h-9 w-9" onClick={skipForward}>
-                <SkipBack className="h-4 w-4" />
+                <SkipForward className="h-4 w-4" />
               </Button>
             </div>
 

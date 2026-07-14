@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { requirePermission } from '@/lib/auth'
 
 export async function GET() {
   try {
@@ -19,6 +20,8 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
+    const perm = await requirePermission('manage_notifications')
+    if (!perm.allowed) return perm.response
     const body = await request.json()
     const { userId, title, message, type } = body
 

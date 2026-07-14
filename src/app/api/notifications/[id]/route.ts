@@ -1,11 +1,14 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { requirePermission } from '@/lib/auth'
 
 export async function PATCH(
   _request: Request,
   { params }: { params: { id: string } }
 ) {
   try {
+    const perm = await requirePermission('manage_notifications')
+    if (!perm.allowed) return perm.response
     const existing = await prisma.notification.findUnique({
       where: { id: params.id },
     })

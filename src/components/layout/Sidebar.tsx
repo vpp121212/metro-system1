@@ -63,74 +63,63 @@ const navigationGroups: NavGroup[] = [
       { labelAr: 'الكاميرات', labelEn: 'Cameras', href: '/cameras', icon: <Camera className="h-5 w-5" /> },
     ],
   },
-  {
-    titleAr: 'التشغيل',
-    titleEn: 'Operations',
-    roles: ['OPERATIONS'],
-    items: [
-      { labelAr: 'القطارات', labelEn: 'Trains', href: '/trains', icon: <Train className="h-5 w-5" /> },
-      { labelAr: 'المحطات', labelEn: 'Stations', href: '/stations', icon: <Building2 className="h-5 w-5" /> },
-      { labelAr: 'الخطوط', labelEn: 'Metro Lines', href: '/lines', icon: <Route className="h-5 w-5" /> },
-      { labelAr: 'الرحلات', labelEn: 'Trips', href: '/trips', icon: <ArrowRightLeft className="h-5 w-5" /> },
-      { labelAr: 'السجل', labelEn: 'History', href: '/history', icon: <History className="h-5 w-5" /> },
-      { labelAr: 'إعادة التشغيل', labelEn: 'Playback', href: '/playback', icon: <PlaySquare className="h-5 w-5" /> },
-    ],
-  },
-  {
-    titleAr: 'التقارير والتحليلات',
-    titleEn: 'Analytics & Reports',
-    roles: ['OPERATIONS'],
-    items: [
-      { labelAr: 'التحليلات', labelEn: 'Analytics', href: '/analytics', icon: <BarChart3 className="h-5 w-5" /> },
-      { labelAr: 'التقارير', labelEn: 'Reports', href: '/reports', icon: <FileText className="h-5 w-5" /> },
-      { labelAr: 'التنبيهات', labelEn: 'Alerts', href: '/alerts', icon: <BellDot className="h-5 w-5" />, badge: 3 },
-    ],
-  },
-  {
-    titleAr: 'الأسطول والصيانة',
-    titleEn: 'Fleet & Maintenance',
-    roles: ['OPERATIONS'],
-    items: [
-      { labelAr: 'الصيانة', labelEn: 'Maintenance', href: '/maintenance', icon: <Wrench className="h-5 w-5" /> },
-      { labelAr: 'الأسطول', labelEn: 'Fleet', href: '/fleet', icon: <Truck className="h-5 w-5" /> },
-    ],
-  },
-  {
-    titleAr: 'الإدارة',
-    titleEn: 'Administration',
-    roles: ['OPERATIONS'],
-    items: [
-      { labelAr: 'المستخدمين', labelEn: 'Users', href: '/users', icon: <Users className="h-5 w-5" /> },
-      { labelAr: 'الصلاحيات', labelEn: 'Roles', href: '/roles', icon: <Shield className="h-5 w-5" /> },
-      { labelAr: 'الأذونات', labelEn: 'Permissions', href: '/permissions', icon: <Key className="h-5 w-5" /> },
-      { labelAr: 'سجل التدقيق', labelEn: 'Audit Logs', href: '/audit-logs', icon: <ScrollText className="h-5 w-5" /> },
-    ],
-  },
-  {
-    titleAr: 'الأمن',
-    titleEn: 'Security',
-    roles: ['OPERATIONS', 'SECURITY'],
-    items: [
-      { labelAr: 'تقارير الحوادث', labelEn: 'Incidents', href: '/incidents', icon: <AlertTriangle className="h-5 w-5" /> },
-    ],
-  },
-  {
-    titleAr: 'التنبيهات',
-    titleEn: 'Alerts',
-    roles: ['OPERATIONS', 'STATION_MANAGER', 'SECURITY'],
-    items: [
-      { labelAr: 'التنبيهات', labelEn: 'Alerts', href: '/alerts', icon: <BellDot className="h-5 w-5" />, badge: 3 },
-    ],
-  },
-  {
-    titleAr: 'النظام',
-    titleEn: 'System',
-    items: [
-      { labelAr: 'المساعد الذكي', labelEn: 'AI Assistant', href: '/ai', icon: <Bot className="h-5 w-5" /> },
-      { labelAr: 'الإعدادات', labelEn: 'Settings', href: '/settings', icon: <Settings className="h-5 w-5" /> },
-      { labelAr: 'الإشعارات', labelEn: 'Notifications', href: '/notifications', icon: <Bell className="h-5 w-5" /> },
-    ],
-  },
+    {
+      titleAr: 'التشغيل',
+      titleEn: 'Operations',
+      roles: ['ADMIN', 'SUPERVISOR'],
+      items: [
+        { labelAr: 'القطارات', labelEn: 'Trains', href: '/trains', icon: <Train className="h-5 w-5" /> },
+        { labelAr: 'المحطات', labelEn: 'Stations', href: '/stations', icon: <Building2 className="h-5 w-5" /> },
+        { labelAr: 'الخطوط', labelEn: 'Metro Lines', href: '/lines', icon: <Route className="h-5 w-5" /> },
+        { labelAr: 'الرحلات', labelEn: 'Trips', href: '/trips', icon: <ArrowRightLeft className="h-5 w-5" /> },
+        { labelAr: 'السجل', labelEn: 'History', href: '/history', icon: <History className="h-5 w-5" /> },
+        { labelAr: 'إعادة التشغيل', labelEn: 'Playback', href: '/playback', icon: <PlaySquare className="h-5 w-5" /> },
+      ],
+    },
+    {
+      titleAr: 'التقارير والتحليلات',
+      titleEn: 'Analytics & Reports',
+      items: [
+        { labelAr: 'التحليلات', labelEn: 'Analytics', href: '/analytics', icon: <BarChart3 className="h-5 w-5" /> },
+        { labelAr: 'التقارير', labelEn: 'Reports', href: '/reports', icon: <FileText className="h-5 w-5" /> },
+        { labelAr: 'التنبيهات', labelEn: 'Alerts', href: '/alerts', icon: <BellDot className="h-5 w-5" />, badge: 3 },
+      ],
+    },
+    {
+      titleAr: 'الأسطول والصيانة',
+      titleEn: 'Fleet & Maintenance',
+      roles: ['ADMIN', 'SUPERVISOR'],
+      items: [
+        { labelAr: 'الصيانة', labelEn: 'Maintenance', href: '/maintenance', icon: <Wrench className="h-5 w-5" /> },
+        { labelAr: 'الأسطول', labelEn: 'Fleet', href: '/fleet', icon: <Truck className="h-5 w-5" /> },
+      ],
+    },
+    {
+      titleAr: 'الإدارة',
+      titleEn: 'Administration',
+      roles: ['ADMIN'],
+      items: [
+        { labelAr: 'لوحة الإدارة', labelEn: 'Admin Panel', href: '/admin', icon: <Shield className="h-5 w-5" /> },
+        { labelAr: 'سجل التدقيق', labelEn: 'Audit Logs', href: '/audit-logs', icon: <ScrollText className="h-5 w-5" /> },
+      ],
+    },
+    {
+      titleAr: 'الأمن',
+      titleEn: 'Security',
+      roles: ['ADMIN', 'SUPERVISOR'],
+      items: [
+        { labelAr: 'تقارير الحوادث', labelEn: 'Incidents', href: '/incidents', icon: <AlertTriangle className="h-5 w-5" /> },
+      ],
+    },
+    {
+      titleAr: 'النظام',
+      titleEn: 'System',
+      items: [
+        { labelAr: 'المساعد الذكي', labelEn: 'AI Assistant', href: '/ai', icon: <Bot className="h-5 w-5" /> },
+        { labelAr: 'الإعدادات', labelEn: 'Settings', href: '/settings', icon: <Settings className="h-5 w-5" />, roles: ['ADMIN', 'SUPERVISOR'] },
+        { labelAr: 'الإشعارات', labelEn: 'Notifications', href: '/notifications', icon: <Bell className="h-5 w-5" />, roles: ['ADMIN', 'SUPERVISOR'] },
+      ],
+    },
 ]
 
 interface SidebarProps {
@@ -236,7 +225,7 @@ export default function Sidebar({ open, collapsed, onClose, onToggleCollapse }: 
                     transition={{ duration: 0.2 }}
                     className="overflow-hidden"
                   >
-                    {group.items.map((item) => {
+                    {group.items.filter(item => !item.roles || !user || item.roles.includes(user.role)).map((item) => {
                       const active = isActive(item.href)
                       return (
                         <Link

@@ -7,76 +7,29 @@ import {
   TrendingUp, Activity, ChevronLeft,
 } from 'lucide-react'
 
+interface Insight {
+  title: string
+  desc: string
+  type: string
+}
+
 interface AIPanelProps {
   open: boolean
   onToggle: () => void
 }
 
-const insights = [
-  {
-    id: '1',
-    title: 'ازدحام متوقع',
-    desc: 'من المتوقع ازدحام على الخط الأزرق عند محطة المتحف الوطني الساعة 14:30',
-    icon: TrendingUp,
-    color: 'text-t-orange',
-    bg: 'bg-t-orange/10',
-    time: 'منذ 2 دقيقة',
-  },
-  {
-    id: '2',
-    title: 'كفاءة الطاقة',
-    desc: 'توفير 12% في استهلاك الطاقة مقارنة بالأسبوع الماضي',
-    icon: Zap,
-    color: 'text-t-yellow',
-    bg: 'bg-t-yellow/10',
-    time: 'منذ 5 دقائق',
-  },
-  {
-    id: '3',
-    title: 'تحليل الازدحام',
-    desc: 'معدل الإشغال الحالي 68% أقل من المتوقع بنسبة 5%',
-    icon: Activity,
-    color: 'text-t-cyan',
-    bg: 'bg-t-cyan/10',
-    time: 'منذ 10 دقائق',
-  },
-  {
-    id: '4',
-    title: 'صيانة تنبؤية',
-    desc: 'القطار Y-002 يحتاج صيانة دورية خلال 48 ساعة',
-    icon: Clock,
-    color: 'text-t-purple',
-    bg: 'bg-t-purple/10',
-    time: 'منذ 15 دقيقة',
-  },
-]
-
-const insightsContent = (
-  <div className="space-y-1.5">
-    {insights.map((insight) => (
-      <div
-        key={insight.id}
-        className="p-2 rounded-xl bg-t-card/40 border border-t-border/30 hover:border-t-border/50 transition-all"
-      >
-        <div className="flex items-start gap-2">
-          <div className={`w-6 h-6 rounded-lg ${insight.bg} flex items-center justify-center shrink-0`}>
-            <insight.icon className={`h-3 w-3 ${insight.color}`} />
-          </div>
-          <div className="min-w-0 flex-1">
-            <div className="flex items-center justify-between">
-              <span className="text-[11px] font-bold text-white">{insight.title}</span>
-              <span className="text-[8px] text-gray-500">{insight.time}</span>
-            </div>
-            <p className="text-[10px] text-gray-400 mt-0.5 leading-relaxed">{insight.desc}</p>
-          </div>
-        </div>
-      </div>
-    ))}
-  </div>
-)
+const iconMap: Record<string, { icon: typeof Brain; color: string; bg: string }> = {
+  fleet: { icon: TrendingUp, color: 'text-t-orange', bg: 'bg-t-orange/10' },
+  alerts: { icon: Zap, color: 'text-t-yellow', bg: 'bg-t-yellow/10' },
+  passengers: { icon: Activity, color: 'text-t-cyan', bg: 'bg-t-cyan/10' },
+  delay: { icon: Clock, color: 'text-t-purple', bg: 'bg-t-purple/10' },
+  lines: { icon: BarChart3, color: 'text-t-blue', bg: 'bg-t-blue/10' },
+}
 
 export default function AIPanel({ open, onToggle }: AIPanelProps) {
   const [isMobile, setIsMobile] = useState(false)
+  const [insights, setInsights] = useState<Insight[]>([])
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     const mq = window.matchMedia('(max-width: 639px)')
@@ -85,6 +38,47 @@ export default function AIPanel({ open, onToggle }: AIPanelProps) {
     mq.addEventListener('change', handler)
     return () => mq.removeEventListener('change', handler)
   }, [])
+
+  useEffect(() => {
+    if (!open) return
+    setLoading(true)
+    fetch('/api/ai/insights')
+      .then((r) => r.json())
+      .then((data) => setInsights(data.insights ?? []))
+      .catch(() => setInsights([]))
+      .finally(() => setLoading(false))
+  }, [open])
+
+  const insightsContent = (
+    <div className="space-y-1.5">
+      {loading ? (
+        <div className="text-[10px] text-gray-400 text-center py-4">جاري التحميل...</div>
+      ) : insights.length === 0 ? (
+        <div className="text-[10px] text-gray-400 text-center py-4">لا توجد رؤى متاحة حالياً</div>
+      ) : (
+        insights.map((insight, i) => {
+          const meta = iconMap[insight.type] ?? { icon: Brain, color: 'text-t-purple', bg: 'bg-t-purple/10' }
+          const Icon = meta.icon
+          return (
+            <div
+              key={i}
+              className="p-2 rounded-xl bg-t-card/40 border border-t-border/30 hover:border-t-border/50 transition-all"
+            >
+              <div className="flex items-start gap-2">
+                <div className={`w-6 h-6 rounded-lg ${meta.bg} flex items-center justify-center shrink-0`}>
+                  <Icon className={`h-3 w-3 ${meta.color}`} />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <span className="text-[11px] font-bold text-white">{insight.title}</span>
+                  <p className="text-[10px] text-gray-400 mt-0.5 leading-relaxed">{insight.desc}</p>
+                </div>
+              </div>
+            </div>
+          )
+        })
+      )}
+    </div>
+  )
 
   return (
     <>

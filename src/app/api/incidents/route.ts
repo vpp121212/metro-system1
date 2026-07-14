@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
 import { prisma } from '@/lib/prisma'
+import { requirePermission } from '@/lib/auth'
 
 export async function GET() {
   try {
@@ -20,6 +21,8 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
+    const perm = await requirePermission('system_admin')
+    if (!perm.allowed) return perm.response
     const cookieStore = await cookies()
     const session = cookieStore.get('session')
     if (!session) return NextResponse.json({ error: 'غير مصرح' }, { status: 401 })
