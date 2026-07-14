@@ -20,9 +20,9 @@ const alerts: TickerItem[] = [
 ]
 
 const typeConfig = {
-  CRITICAL: { bg: 'bg-t-red/90', border: 'border-t-red/50', icon: AlertCircle, text: 'text-white' },
-  WARNING: { bg: 'bg-t-orange/90', border: 'border-t-orange/50', icon: AlertTriangle, text: 'text-white' },
-  INFO: { bg: 'bg-t-blue/90', border: 'border-t-blue/50', icon: Info, text: 'text-white' },
+  CRITICAL: { bg: 'bg-t-red', border: 'border-t-red/50', icon: AlertCircle },
+  WARNING: { bg: 'bg-t-orange', border: 'border-t-orange/50', icon: AlertTriangle },
+  INFO: { bg: 'bg-t-blue', border: 'border-t-blue/50', icon: Info },
 }
 
 export default function TickerBar() {
@@ -34,7 +34,7 @@ export default function TickerBar() {
 
   return (
     <div className="relative w-full overflow-hidden" style={{ height: visible.length > 0 ? '44px' : '0px' }}>
-      <div className="absolute inset-0 bg-gradient-to-l from-t-dark via-t-dark/95 to-t-dark border-b border-t-border/40 flex items-center overflow-hidden shadow-lg shadow-t-red/5">
+      <div className="absolute inset-0 bg-gradient-to-l from-[#060b18] via-[#060b18]/95 to-[#060b18] border-b border-white/10 flex items-center overflow-hidden shadow-lg shadow-red-500/5">
         {/* Static label */}
         <div className="shrink-0 flex items-center gap-2 px-4 h-full bg-gradient-to-l from-t-red/30 to-t-red/20 border-l border-t-border/40 z-10">
           <span className="relative flex h-2.5 w-2.5">
@@ -62,10 +62,10 @@ export default function TickerBar() {
                   className={`inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-md ${cfg.bg} ${cfg.border} border`}
                   style={{ marginLeft: i === 0 ? '0' : undefined }}
                 >
-                  <Icon className="h-4 w-4 shrink-0" />
-                  <span className="text-[13px] font-medium whitespace-nowrap">{item.message}</span>
+                  <Icon className="h-4 w-4 shrink-0 text-white-pure" />
+                  <span className="text-[13px] font-medium whitespace-nowrap text-white-pure">{item.message}</span>
                   {item.line && (
-                    <span className="text-[11px] opacity-70 whitespace-nowrap">• {item.line}</span>
+                    <span className="text-[11px] opacity-80 whitespace-nowrap text-white-pure/80">• {item.line}</span>
                   )}
                 </div>
               )

@@ -48,11 +48,17 @@ body {
   font-family: 'Cairo', 'Inter', sans-serif;
 }
 
-html:not(.dark) .text-white,
+html:not(.dark) .text-white {
+  color: var(--color-text-primary);
+}
 html:not(.dark) .text-gray-100,
 html:not(.dark) .text-gray-200,
 html:not(.dark) .text-gray-300 {
   color: var(--color-text-primary);
+}
+
+.text-white-pure {
+  color: #fff !important;
 }
 html:not(.dark) .text-gray-400,
 html:not(.dark) .text-gray-500 {
